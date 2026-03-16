@@ -27,5 +27,5 @@ jobs:
           username: ${{ secrets.DEV_SERVER_USER }}
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
           source: "dist/*"
-          target: "/www/wwwroot/your-site-folder"
+          target: "/www/wwwroot/yorbux.dev.zettazone.in"
           strip_components: 1

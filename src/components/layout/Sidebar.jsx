@@ -10,13 +10,13 @@ const Sidebar = () => {
     ];
 
     return (
-        <nav className="bg-white rounded-xl p-4 shadow-sm">
+        <nav className="bg-main-card rounded-xl p-4 shadow-sm">
             <ul className="space-y-2">
                 {menuItems.map((item) => (
                     <li
                         key={item.name}
                         className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all ${
-                            item.active ? 'bg-[#4E5D78] text-white shadow-md' : 'text-gray-500 hover:bg-gray-100'
+                            item.active ? 'bg-blue-600/10 dark:bg-blue-600/20 text-blue-600' : 'text-sec-text hover:bg-gray-100 dark:hover:bg-gray-800'
                         }`}
                     >
                         <div className="flex items-center gap-3">
@@ -30,7 +30,7 @@ const Sidebar = () => {
                         )}
                     </li>
                 ))}
-                <li className="flex items-center gap-3 p-3 text-gray-500 hover:bg-gray-100 rounded-lg mt-10">
+                <li className="flex items-center gap-3 p-3 text-sec-text hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg mt-10">
                     <span>🚪</span> <span>Logout</span>
                 </li>
             </ul>

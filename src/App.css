@@ -1,1 +1,35 @@
-/* Emptying default styles to allow full width */
+@import "tailwindcss";
+
+@theme {
+  --color-main-bg: var(--bg-body);
+  --color-main-card: var(--bg-card);
+  --color-main-text: var(--text-main);
+  --color-sec-text: var(--text-secondary);
+  --color-border-color: var(--border-line);
+}
+
+:root {
+  --bg-body: #f0f2f5;
+  --bg-card: #ffffff;
+  --text-main: #050505;
+  --text-secondary: #65676b;
+  --border-line: #e4e6eb;
+}
+
+.dark {
+  --bg-body: #18191a; /* Dark Background */
+  --bg-card: #242526; /* Dark Card Color */
+  --text-main: #e4e6eb; /* Light Text for Dark Mode */
+  --text-secondary: #b0b3b8;
+  --border-line: #3e4042;
+}
+
+/* Smooth transition for all elements */
+* {
+  @apply transition-colors duration-200;
+}
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-main);
+}

@@ -6,17 +6,17 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
-      // Color Palette
       colors: {
-        'background': '#F0F2F5',
-        'primary-blue': '#1877F2',
-        'card': '#FFFFFF',
-        'text-dark': '#333333',
-        'text-muted': '#65676B',
-        'online': '#31A24C',
+        'main-bg': 'var(--color-main-bg)',
+        'card-bg': 'var(--color-card-bg)',
+        'chat-bubble': 'var(--color-chat-bubble)',
+        'border-color': 'var(--color-border-line)',
+        'main-text': 'var(--color-main-text)',
+        'sec-text': 'var(--color-sec-text)',
       },
       // Spacing System (8dp Grid)
       spacing: {

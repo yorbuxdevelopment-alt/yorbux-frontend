@@ -23,7 +23,7 @@ const FriendsList = () => {
 
     const storiesRef = useRef(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
-    const [showRightArrow, setShowRightArrow] = useState(true); // Assume right arrow is visible initially
+    const [showRightArrow, setShowRightArrow] = useState(true);
 
     const checkScroll = () => {
         if (storiesRef.current) {
@@ -37,7 +37,7 @@ const FriendsList = () => {
         const currentRef = storiesRef.current;
         if (currentRef) {
             currentRef.addEventListener('scroll', checkScroll);
-            checkScroll(); // Initial check
+            checkScroll();
         }
         return () => {
             if (currentRef) {
@@ -48,7 +48,7 @@ const FriendsList = () => {
 
     const scroll = (direction) => {
         if (storiesRef.current) {
-            const scrollAmount = storiesRef.current.clientWidth / 2; // Scroll half the visible width
+            const scrollAmount = storiesRef.current.clientWidth / 2;
             storiesRef.current.scrollBy({
                 left: direction === 'left' ? -scrollAmount : scrollAmount,
                 behavior: 'smooth',
@@ -57,58 +57,58 @@ const FriendsList = () => {
     };
 
     return (
-        <div className="bg-main-card rounded-xl p-4 shadow-sm sticky top-0">
+        <div className="bg-card-bg rounded-xl p-4 shadow-sm h-full flex flex-col">
             <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-sec-text" size={20} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-sec" size={20} />
                 <input
                     type="text"
                     placeholder="Search Friends"
-                    className="bg-gray-100 dark:bg-[#3a3b3c] text-main-text p-2 rounded-full outline-none pl-10 w-full"
+                    className="bg-bg-page text-text-main p-2 rounded-full outline-none pl-10 w-full text-sm border border-border-ui/10"
                 />
             </div>
 
-            <h3 className="font-semibold text-lg mb-2 text-main-text">Stories</h3>
-            <div className="relative flex items-center">
+            <h3 className="font-bold text-h3 mb-2 text-text-main">Stories</h3>
+            <div className="relative flex items-center mb-4">
                 {showLeftArrow && (
                     <button
                         onClick={() => scroll('left')}
-                        className="absolute left-0 z-10 p-1 bg-main-card rounded-full shadow-md text-main-text hover:bg-gray-100 dark:hover:bg-gray-800"
+                        className="absolute left-0 z-10 p-1 bg-bg-surface rounded-full shadow-md text-text-main hover:bg-bg-page"
                     >
                         <ChevronLeft size={20} />
                     </button>
                 )}
-                <div ref={storiesRef} className="flex gap-3 mb-4 overflow-x-auto no-scrollbar pb-2">
+                <div ref={storiesRef} className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
                     {stories.map((story) => (
                         <div key={story.name} className="flex flex-col items-center gap-1 flex-shrink-0">
                             <div className="relative">
-                                <img src={story.avatar} alt={story.name} className="w-14 h-14 rounded-full border-2 border-blue-500 p-0.5" />
+                                <img src={story.avatar} alt={story.name} className="w-14 h-14 rounded-full border-2 border-brand-blue p-0.5" />
                                 {story.isYou && (
-                                    <button className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-lg">+</button>
+                                    <button className="absolute bottom-0 right-0 bg-brand-blue text-white rounded-full w-5 h-5 flex items-center justify-center text-lg">+</button>
                                 )}
                             </div>
-                            <p className="text-xs text-sec-text">{story.name}</p>
+                            <p className="text-[10px] text-text-sec">{story.name}</p>
                         </div>
                     ))}
                 </div>
                 {showRightArrow && (
                     <button
                         onClick={() => scroll('right')}
-                        className="absolute right-0 z-10 p-1 bg-main-card rounded-full shadow-md text-main-text hover:bg-gray-100 dark:hover:bg-gray-800"
+                        className="absolute right-0 z-10 p-1 bg-bg-surface rounded-full shadow-md text-text-main hover:bg-bg-page"
                     >
                         <ChevronRight size={20} />
                     </button>
                 )}
             </div>
 
-            <h3 className="font-semibold text-lg mb-2 text-main-text">Friends</h3>
-            <ul className="space-y-3 overflow-y-auto no-scrollbar" style={{ height: 'calc(100vh - 220px)' }}>
+            <h3 className="font-bold text-h3 mb-2 text-text-main">Friends</h3>
+            <ul className="space-y-3 overflow-y-auto no-scrollbar flex-1">
                 {friends.map((friend) => (
-                    <li key={friend.name} className="flex items-center gap-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-lg">
+                    <li key={friend.name} className="flex items-center gap-3 cursor-pointer hover:bg-bg-page p-2 rounded-lg transition-colors">
                         <div className="relative">
-                            <img src={friend.avatar} alt={friend.name} className="w-10 h-10 rounded-full" />
-                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-main-card"></span>
+                            <img src={friend.avatar} alt={friend.name} className="w-10 h-10 rounded-full border border-border-ui/20" />
+                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-bg-surface"></span>
                         </div>
-                        <span className="font-semibold text-main-text">{friend.name}</span>
+                        <span className="font-bold text-xs text-text-main">{friend.name}</span>
                     </li>
                 ))}
             </ul>

@@ -7,21 +7,21 @@ const SuggestedFollows = () => {
     ];
 
     return (
-        <div className="bg-main-card p-4 rounded-xl shadow-sm">
-            <h3 className="font-semibold text-lg mb-4 text-main-text">You Might Like</h3>
+        <div className="bg-bg-surface p-6 rounded-xl shadow-sm border border-border-ui">
+            <h3 className="font-bold text-h3 mb-4 text-text-main">You Might Like</h3>
             <div className="space-y-4">
                 {suggestions.map((user) => (
                     <div key={user.handle} className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                            <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full" />
+                            <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full border border-border-ui/10" />
                             <div>
-                                <p className="font-semibold text-main-text">{user.name}</p>
-                                <p className="text-sm text-sec-text">{user.handle}</p>
+                                <p className="font-bold text-sm text-text-main">{user.name}</p>
+                                <p className="text-xs text-text-sec">{user.handle}</p>
                             </div>
                         </div>
                         <div className="flex gap-2">
-                            <button className="text-sec-text hover:text-gray-700 text-sm font-medium">Ignore</button>
-                            <button className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold hover:bg-blue-700">
+                            <button className="text-text-sec hover:text-action-blue text-xs font-bold transition-colors">Ignore</button>
+                            <button className="bg-action-blue text-white px-4 py-1.5 rounded-lg text-xs font-sans font-bold hover:opacity-90 shadow-md shadow-action-blue/20 border border-border-ui">
                                 Follow
                             </button>
                         </div>
@@ -37,30 +37,30 @@ const RecentEvents = () => {
         {
             title: 'Web Development Meetup',
             location: 'San Francisco, CA',
-            icon: <Calendar className="text-blue-500" />,
+            icon: <Calendar className="text-action-blue" />,
             attendees: ['https://i.pravatar.cc/30?u=a', 'https://i.pravatar.cc/30?u=b', 'https://i.pravatar.cc/30?u=c'],
         },
     ];
 
     return (
-        <div className="bg-main-card p-4 rounded-xl shadow-sm">
-            <h3 className="font-semibold text-lg mb-4 text-main-text">Recent Events</h3>
+        <div className="bg-bg-surface p-6 rounded-xl shadow-sm border border-border-ui">
+            <h3 className="font-bold text-h3 mb-4 text-text-main">Recent Events</h3>
             {events.map((event, index) => (
                 <div key={index} className="flex items-start gap-4">
-                    <div className="bg-blue-100 dark:bg-blue-600/20 p-3 rounded-lg">{event.icon}</div>
+                    <div className="bg-action-blue/10 p-3 rounded-lg border border-action-blue/20">{event.icon}</div>
                     <div>
-                        <p className="font-semibold text-main-text">{event.title}</p>
-                        <div className="flex items-center text-sm text-sec-text gap-1">
-                            <MapPin size={14} />
+                        <p className="font-bold text-sm text-text-main">{event.title}</p>
+                        <div className="flex items-center text-xs text-text-sec gap-1 mt-1">
+                            <MapPin size={12} />
                             <span>{event.location}</span>
                         </div>
-                        <div className="flex mt-2">
+                        <div className="flex mt-3">
                             {event.attendees.map((avatar, i) => (
                                 <img
                                     key={i}
                                     src={avatar}
                                     alt="attendee"
-                                    className={`w-8 h-8 rounded-full border-2 border-main-card ${i > 0 ? '-ml-3' : ''}`}
+                                    className={`w-8 h-8 rounded-full border-2 border-bg-surface ${i > 0 ? '-ml-3' : ''}`}
                                 />
                             ))}
                         </div>
@@ -73,15 +73,15 @@ const RecentEvents = () => {
 
 const Birthdays = () => {
     return (
-        <div className="bg-main-card p-4 rounded-xl shadow-sm text-center">
-            <Gift size={40} className="mx-auto text-pink-500" />
-            <p className="mt-2 text-sec-text">
-                <span className="font-semibold text-main-text">Jane Doe</span> and <span className="font-semibold text-main-text">2 others</span> have birthdays today.
+        <div className="bg-bg-surface p-6 rounded-xl shadow-sm text-center border border-border-ui">
+            <Gift size={40} className="mx-auto text-pink-500 mb-2" />
+            <p className="text-sm text-text-sec">
+                <span className="font-bold text-text-main">Jane Doe</span> and <span className="font-bold text-text-main">2 others</span> have birthdays today.
             </p>
             <input
                 type="text"
                 placeholder="Write a wish..."
-                className="mt-4 w-full bg-gray-100 dark:bg-[#3a3b3c] rounded-full py-2 px-4 focus:outline-none text-main-text"
+                className="mt-4 w-full bg-bg-page border border-border-ui/20 rounded-lg py-2.5 px-4 focus:outline-none text-sm text-text-main placeholder-text-sec"
             />
         </div>
     );

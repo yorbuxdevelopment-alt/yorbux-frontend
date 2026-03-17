@@ -14,7 +14,7 @@ export default {
         'main-bg': 'var(--color-main-bg)',
         'card-bg': 'var(--color-card-bg)',
         'chat-bubble': 'var(--color-chat-bubble)',
-        'border-color': 'var(--color-border-line)',
+        'border-color': 'var(--color-border-color)',
         'main-text': 'var(--color-main-text)',
         'sec-text': 'var(--color-sec-text)',
       },

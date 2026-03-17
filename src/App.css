@@ -1,35 +1,84 @@
 @import "tailwindcss";
 
 @theme {
-  --color-main-bg: var(--bg-body);
-  --color-main-card: var(--bg-card);
+  /* --- Typography --- */
+  --font-sans: "Inter", ui-sans-serif, system-ui;
+  --text-display: 2.25rem; /* 36px */
+  --text-h1: 1.5rem;      /* 24px */
+  --text-h2: 1.25rem;     /* 20px */
+  --text-h3: 1rem;        /* 16px */
+  --font-weight-h3: 700;
+
+  /* --- Spacing (8dp Grid) --- */
+  --spacing-1: 0.25rem;  /* 4px */
+  --spacing-2: 0.5rem;   /* 8px */
+  --spacing-3: 0.75rem;  /* 12px */
+  --spacing-4: 1rem;     /* 16px */
+  --spacing-5: 1.25rem;  /* 20px */
+  --spacing-6: 1.5rem;   /* 24px */
+  --spacing-8: 2rem;     /* 32px */
+  --spacing-10: 2.5rem;  /* 40px */
+  --spacing-12: 3rem;    /* 48px */
+  --spacing-16: 4rem;    /* 64px */
+
+  /* --- Professional Midnight Navy Palette --- */
+  --color-brand-blue: #5F87FF;
+  --color-brand-navy: #0E244F;
+  --color-action-blue: #4C6CCC;
+
+  /* Semantic Variables - Using your Tonal Palette */
+  --color-main-bg: var(--bg-page);
+  --color-surface-bg: var(--bg-surface);
+  --color-card-bg: var(--bg-card);
   --color-main-text: var(--text-main);
   --color-sec-text: var(--text-secondary);
-  --color-border-color: var(--border-line);
+  --color-border-ui: var(--border-line);
 }
 
 :root {
-  --bg-body: #f0f2f5;
-  --bg-card: #ffffff;
-  --text-main: #050505;
-  --text-secondary: #65676b;
-  --border-line: #e4e6eb;
+  /* Light Mode */
+  --bg-page: #F2F5FF;
+  --bg-surface: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --text-main: #0E244F;
+  --text-secondary: #65676B;
+  --border-line: rgba(19, 42, 85, 0.1);
 }
 
 .dark {
-  --bg-body: #18191a; /* Dark Background */
-  --bg-card: #242526; /* Dark Card Color */
-  --text-main: #e4e6eb; /* Light Text for Dark Mode */
-  --text-secondary: #b0b3b8;
-  --border-line: #3e4042;
+  /* Dark Mode (Professional Midnight Navy) */
+  --bg-page: #071228;    /* Navy 900 (Canvas) */
+  --bg-surface: #091834; /* Navy 800 (Sidebar/Nav) */
+  --bg-card: #0B1D3F;    /* Navy 700 (Feed Cards) */
+  --text-main: #E4E6EB;
+  --text-secondary: #B0B3B8;
+  --border-line: #132A55; /* Subtle UI Border */
+  --bg-chat-bubble: #132A55;
 }
 
-/* Smooth transition for all elements */
+/* Transitions & Global Styles */
 * {
   @apply transition-colors duration-200;
 }
 
 body {
-  background-color: var(--bg-body);
+  background-color: var(--bg-page);
   color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  @apply transition-all duration-300;
+}
+
+/* Scrollbar Utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* UI Components Defaults */
+.border-standard {
+  border: 1px solid var(--border-line);
 }

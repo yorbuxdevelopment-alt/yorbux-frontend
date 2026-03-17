@@ -7,7 +7,7 @@ const Navbar = () => {
     const { toggleTheme } = useTheme();
 
     return (
-        <header className="bg-main-card shadow-sm rounded-xl p-4 flex justify-between items-center">
+        <header className="bg-card-bg shadow-sm rounded-xl p-4 flex justify-between items-center border border-border-color">
             <div className="flex items-center gap-4">
                 <img src="/logo.png" alt="Meetmax" className="h-8" />
                 <div className="relative">
@@ -45,7 +45,7 @@ const Navbar = () => {
                         </div>
                     </div>
                     {isDropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-48 bg-main-card rounded-lg shadow-xl z-20">
+                        <div className="absolute right-0 mt-2 w-48 bg-card-bg rounded-lg shadow-xl z-20 border border-border-color">
                             <a href="#" className="flex items-center gap-3 px-4 py-2 text-main-text hover:bg-gray-100 dark:hover:bg-gray-800">
                                 <User size={20} />
                                 <span>Profile</span>

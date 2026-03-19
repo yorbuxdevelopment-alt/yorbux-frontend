@@ -1,7 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-import defaultTheme from 'tailwindcss/defaultTheme';
+const defaultTheme = require('tailwindcss/defaultTheme');
 
-export default {
+module.exports = {
+  darkMode: 'class', // Enable dark mode based on class
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -10,13 +11,19 @@ export default {
   ],
   theme: {
     extend: {
+      // Colors - Mapped from CSS Variables
       colors: {
-        'main-bg': 'var(--color-main-bg)',
-        'card-bg': 'var(--color-card-bg)',
-        'chat-bubble': 'var(--color-chat-bubble)',
-        'border-color': 'var(--color-border-color)',
-        'main-text': 'var(--color-main-text)',
-        'sec-text': 'var(--color-sec-text)',
+        'bg-page': 'var(--bg-page)',
+        'bg-surface': 'var(--bg-surface)',
+        'bg-card': 'var(--bg-card)',
+        
+        'text-main': 'var(--text-main)',
+        'text-sec': 'var(--text-sec)',
+        'border-ui': 'var(--border-ui)',
+        
+        'action-blue': 'var(--action-blue)',
+        'brand-blue': 'var(--brand-blue)',
+        'brand-navy': 'var(--brand-navy)', // Added for gradient
       },
       // Spacing System (8dp Grid)
       spacing: {
@@ -30,20 +37,17 @@ export default {
         '10': '2.5rem',  // 40px
         '12': '3rem',    // 48px
         '16': '4rem',    // 64px
-        '20': '5rem',    // 80px
-        '24': '6rem',    // 96px
       },
       // Typography Scale
       fontSize: {
-        'caption':    ['0.75rem', { lineHeight: '1.5', fontWeight: '400' }], // 12px
-        'body-sm':    ['0.875rem', { lineHeight: '1.5', fontWeight: '400' }], // 14px
-        'body':       ['1rem', { lineHeight: '1.5', fontWeight: '400' }],     // 16px (Base)
-        'h4':         ['1rem', { lineHeight: '1.4', fontWeight: '500' }],     // 16px
-        'h3':         ['1.125rem', { lineHeight: '1.4', fontWeight: '500' }], // 18px
-        'h2':         ['1.25rem', { lineHeight: '1.3', fontWeight: '500' }], // 20px
-        'h1':         ['1.5rem', { lineHeight: '1.3', fontWeight: '500' }],   // 24px
-        'display-md': ['1.875rem', { lineHeight: '1.2', fontWeight: '600' }], // 30px
-        'display-lg': ['2.25rem', { lineHeight: '1.2', fontWeight: '600' }], // 36px
+        'display': ['2.25rem', { lineHeight: '1.2', fontWeight: '600' }], // 36px
+        'h1':      ['1.5rem', { lineHeight: '1.3', fontWeight: '500' }],   // 24px
+        'h2':      ['1.25rem', { lineHeight: '1.3', fontWeight: '500' }], // 20px
+        'h3':      ['1rem', { lineHeight: '1.4', fontWeight: '700' }],     // 16px (Bold)
+        // Base body text is 16px (1rem) by default in Tailwind
+        'sm':      ['0.875rem', { lineHeight: '1.5', fontWeight: '400' }], // 14px
+        'xs':      ['0.75rem', { lineHeight: '1.5', fontWeight: '400' }], // 12px
+        '2xs':     ['0.625rem', { lineHeight: '1.5', fontWeight: '400' }], // 10px
       },
       // Font Family
       fontFamily: {
@@ -58,6 +62,8 @@ export default {
       },
       borderRadius: {
         'xl': '0.75rem', // 12px
+        '2xl': '1rem', // 16px
+        '3xl': '1.5rem', // 24px
       }
     },
   },

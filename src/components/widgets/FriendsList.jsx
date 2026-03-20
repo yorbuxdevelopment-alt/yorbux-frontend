@@ -57,58 +57,56 @@ const FriendsList = () => {
     };
 
     return (
-        <div className="bg-card-bg rounded-xl p-4 shadow-sm h-full flex flex-col">
-            <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-sec" size={20} />
+        <div className="bg-bg-surface rounded-xl p-4 sm:p-6 shadow-sm h-full flex flex-col"> {/* Adjusted padding */}
+            <div className="relative mb-3 sm:mb-4"> {/* Adjusted margin */}
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-sec" size={16} /> {/* Fixed: removed sm:size */}
                 <input
                     type="text"
                     placeholder="Search Friends"
-                    className="bg-bg-page text-text-main p-2 rounded-full outline-none pl-10 w-full text-sm border border-border-ui/10"
-                />
+                    className="bg-bg-page text-text-main p-2 rounded-full outline-none pl-9 sm:pl-10 w-full text-xs sm:text-sm border border-border-ui/10"/>
             </div>
 
-            <h3 className="font-bold text-h3 mb-2 text-text-main">Stories</h3>
-            <div className="relative flex items-center mb-4">
+            <h3 className="font-bold text-h3 sm:text-h2 mb-2 sm:mb-3 text-text-main">Stories</h3> {/* Adjusted text size and margin */}
+            <div className="relative flex items-center mb-3 sm:mb-4"> {/* Adjusted margin */}
                 {showLeftArrow && (
                     <button
                         onClick={() => scroll('left')}
-                        className="absolute left-0 z-10 p-1 bg-bg-surface rounded-full shadow-md text-text-main hover:bg-bg-page"
+                        className="absolute left-0 z-10 p-0.5 sm:p-1 bg-bg-surface rounded-full shadow-md text-text-main hover:bg-bg-page"
                     >
-                        <ChevronLeft size={20} />
+                        <ChevronLeft size={16} /> {/* Fixed: removed sm:size */}
                     </button>
                 )}
-                <div ref={storiesRef} className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                <div ref={storiesRef} className="flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-2"> {/* Adjusted gap */}
                     {stories.map((story) => (
-                        <div key={story.name} className="flex flex-col items-center gap-1 flex-shrink-0">
+                        <div key={story.name} className="flex flex-col items-center gap-0.5 sm:gap-1 flex-shrink-0"> {/* Adjusted gap */}
                             <div className="relative">
-                                <img src={story.avatar} alt={story.name} className="w-14 h-14 rounded-full border-2 border-brand-blue p-0.5" />
+                                <img src={story.avatar} alt={story.name} className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 border-brand-blue p-0.5" /> {/* Adjusted avatar size */}
                                 {story.isYou && (
-                                    <button className="absolute bottom-0 right-0 bg-brand-blue text-white rounded-full w-5 h-5 flex items-center justify-center text-lg">+</button>
+                                    <button className="absolute bottom-0 right-0 bg-brand-blue text-white rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs sm:text-lg">+</button>
                                 )}
                             </div>
-                            <p className="text-[10px] text-text-sec">{story.name}</p>
+                            <p className="text-2xs sm:text-[10px] text-text-sec">{story.name}</p> {/* Adjusted text size */}
                         </div>
                     ))}
                 </div>
                 {showRightArrow && (
                     <button
                         onClick={() => scroll('right')}
-                        className="absolute right-0 z-10 p-1 bg-bg-surface rounded-full shadow-md text-text-main hover:bg-bg-page"
-                    >
-                        <ChevronRight size={20} />
+                        className="absolute right-0 z-10 p-0.5 sm:p-1 bg-bg-surface rounded-full shadow-md text-text-main hover:bg-bg-page">
+                        <ChevronRight size={16} /> {/* Fixed: removed sm:size */}
                     </button>
                 )}
             </div>
 
-            <h3 className="font-bold text-h3 mb-2 text-text-main">Friends</h3>
-            <ul className="space-y-3 overflow-y-auto no-scrollbar flex-1">
+            <h3 className="font-bold text-h3 sm:text-h2 mb-2 sm:mb-3 text-text-main">Friends</h3> {/* Adjusted text size and margin */}
+            <ul className="space-y-2 sm:space-y-3 overflow-y-auto no-scrollbar flex-1"> {/* Adjusted space-y */}
                 {friends.map((friend) => (
-                    <li key={friend.name} className="flex items-center gap-3 cursor-pointer hover:bg-bg-page p-2 rounded-lg transition-colors">
+                    <li key={friend.name} className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:bg-bg-page p-1.5 sm:p-2 rounded-lg transition-colors"> {/* Adjusted padding and gap */}
                         <div className="relative">
-                            <img src={friend.avatar} alt={friend.name} className="w-10 h-10 rounded-full border border-border-ui/20" />
-                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-bg-surface"></span>
+                            <img src={friend.avatar} alt={friend.name} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-border-ui/20" /> {/* Adjusted avatar size */}
+                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full border-2 border-bg-surface"></span> {/* Adjusted size */}
                         </div>
-                        <span className="font-bold text-xs text-text-main">{friend.name}</span>
+                        <span className="font-bold text-xs sm:text-sm text-text-main">{friend.name}</span> {/* Adjusted text size */}
                     </li>
                 ))}
             </ul>

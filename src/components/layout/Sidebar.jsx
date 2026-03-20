@@ -13,28 +13,28 @@ const Sidebar = () => {
     ];
 
     return (
-        <nav className="bg-card-bg rounded-xl p-4 shadow-sm border border-border-color">
-            <ul className="space-y-2">
+        <nav className="bg-bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border-ui h-full"> {/* Adjusted padding */}
+            <ul className="space-y-2 sm:space-y-3"> {/* Adjusted space-y */}
                 {menuItems.map((item) => (
                     <Link to={item.path} key={item.name}>
                         <li
-                            className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all ${
-                                location.pathname === item.path ? 'bg-blue-600/10 dark:bg-blue-600/20 text-blue-600' : 'text-sec-text hover:bg-gray-100 dark:hover:bg-gray-800'
+                            className={`flex items-center justify-between p-2 sm:p-3 rounded-lg cursor-pointer transition-all text-sm sm:text-base ${ // Adjusted padding and text size
+                                location.pathname === item.path ? 'bg-action-blue/10 text-action-blue font-bold' : 'text-text-sec hover:bg-bg-page'
                             }`}
                         >
-                            <div className="flex items-center gap-3">
-                                <span>{item.icon}</span>
+                            <div className="flex items-center gap-2 sm:gap-3"> {/* Adjusted gap */}
+                                <span className="text-lg">{item.icon}</span>
                                 <span className="font-medium">{item.name}</span>
                             </div>
                             {item.count && (
-                                <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
                                     {item.count}
                                 </span>
                             )}
                         </li>
                     </Link>
                 ))}
-                <li className="flex items-center gap-3 p-3 text-sec-text hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg mt-10">
+                <li className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 text-text-sec hover:bg-bg-page rounded-lg mt-4 sm:mt-6 cursor-pointer text-sm sm:text-base"> {/* Adjusted padding, gap, and text size */}
                     <span>🚪</span> <span>Logout</span>
                 </li>
             </ul>

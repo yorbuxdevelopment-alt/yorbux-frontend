@@ -1,29 +1,32 @@
 import { Link, useLocation } from 'react-router-dom';
+import { Home, Users, MessageSquareMore, Bell, Compass, User, Settings, LogOut } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ handleLogout }) => {
     const location = useLocation();
     const menuItems = [
-        { name: 'Feed', icon: '🏠', path: '/' },
-        { name: 'My community', icon: '👥', path: '/community' },
-        { name: 'Messages', icon: '💬', path: '/messages' },
-        { name: 'Notification', icon: '🔔', count: 2, path: '/notifications' },
-        { name: 'Explore', icon: '🌍', path: '/explore' },
-        { name: 'Profile', icon: '👤', path: '/profile' },
-        { name: 'Settings', icon: '⚙️', path: '/settings' },
+        { name: 'Feed', icon: <Home size={20} />, path: '/' },
+        { name: 'My community', icon: <Users size={20} />, path: '/community' },
+        { name: 'Messages', icon: <MessageSquareMore size={20} />, path: '/messages' },
+        { name: 'Notification', icon: <Bell size={20} />, count: 2, path: '/notifications' },
+        // { name: 'Explore', icon: <Compass size={20} />, path: '/explore' },
+        { name: 'Profile', icon: <User size={20} />, path: '/profile' },
+        { name: 'Settings', icon: <Settings size={20} />, path: '/settings' },
     ];
 
     return (
-        <nav className="bg-bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border-ui h-full"> {/* Adjusted padding */}
-            <ul className="space-y-2 sm:space-y-3"> {/* Adjusted space-y */}
+        <nav className="bg-bg-surface p-6 shadow-sm h-full flex flex-col">
+            <ul className="space-y-4">
                 {menuItems.map((item) => (
                     <Link to={item.path} key={item.name}>
                         <li
-                            className={`flex items-center justify-between p-2 sm:p-3 rounded-lg cursor-pointer transition-all text-sm sm:text-base ${ // Adjusted padding and text size
-                                location.pathname === item.path ? 'bg-action-blue/10 text-action-blue font-bold' : 'text-text-sec hover:bg-bg-page'
+                            className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all text-base ${
+                                location.pathname === item.path 
+                                ? 'bg-sidebar-active-bg text-sidebar-active-text-color font-bold' 
+                                : 'text-text-sec hover:bg-bg-page'
                             }`}
                         >
-                            <div className="flex items-center gap-2 sm:gap-3"> {/* Adjusted gap */}
-                                <span className="text-lg">{item.icon}</span>
+                            <div className="flex items-center gap-4">
+                                {item.icon}
                                 <span className="font-medium">{item.name}</span>
                             </div>
                             {item.count && (
@@ -34,8 +37,14 @@ const Sidebar = () => {
                         </li>
                     </Link>
                 ))}
-                <li className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 text-text-sec hover:bg-bg-page rounded-lg mt-4 sm:mt-6 cursor-pointer text-sm sm:text-base"> {/* Adjusted padding, gap, and text size */}
-                    <span>🚪</span> <span>Logout</span>
+            </ul>
+            <ul className="mt-auto">
+                <li 
+                    onClick={handleLogout}
+                    className="flex items-center gap-4 p-4 text-text-sec hover:bg-bg-page rounded-lg mt-6 cursor-pointer text-base"
+                >
+                    <LogOut size={20} />
+                    <span className="font-medium">Logout</span>
                 </li>
             </ul>
         </nav>

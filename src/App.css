@@ -1,31 +1,33 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   /* Light Mode */
-  --bg-page: #F2F5FF;    /* Light Neutral Background */
-  --bg-surface: #FFFFFF; /* Sidebar/Navbar */
-  --bg-card: #FFFFFF;    /* Feed Cards */
-  --text-main: #0E244F;  /* Navy for high readability */
+  --bg-page: #F2F5FF;
+  --bg-surface: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --text-main: #0E244F;
   --text-sec: #65676B;
   --border-ui: rgba(19, 42, 85, 0.1);
   --action-blue: #4C6CCC;
   --brand-blue: #5F87FF;
   --brand-navy: #0E244F;
+  --sidebar-active-bg: #6E7C95;
+  --sidebar-active-text-color: #FFFFFF;
+  --chat-active-bg: #EEF2FF;
 }
 
 .dark {
-  /* Dark Mode - Midnight Navy Palette */
-  --bg-page: #071228;    /* Layer 1 - Deepest Navy */
-  --bg-surface: #091834; /* Layer 2 - Surfaces */
-  --bg-card: #0B1D3F;    /* Layer 3 - Feed Cards (Lighter for Depth) */
+  /* Dark Mode */
+  --bg-page: #071228;
+  --bg-surface: #091834;
+  --bg-card: #0B1D3F;
   --text-main: #E4E6EB;
   --text-sec: #B0B3B8;
   --border-ui: #132A55;
-  --action-blue: #4C6CCC; /* Action blue remains same */
-  --brand-blue: #5F87FF; /* Brand blue remains same */
-  --brand-navy: #0E244F; /* Brand navy remains same */
+  --action-blue: #4C6CCC;
+  --brand-blue: #5F87FF;
+  --brand-navy: #0E244F;
+  --sidebar-active-bg: #9FA7B9;
+  --sidebar-active-text-color: #FFFFFF;
+  --chat-active-bg: #132A55;
 }
 
 /* Transitions & Global Styles */

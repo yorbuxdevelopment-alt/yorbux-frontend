@@ -1,112 +1,126 @@
-import React from 'react';
-import Navbar from '../components/layout/Navbar';
-import Sidebar from '../components/layout/Sidebar';
+import React, { useState, useEffect, useRef } from 'react';
+import { Search, Phone, Video, Info, Send, Paperclip, Smile } from 'lucide-react';
+import ChatInfoDrawer from '../components/chat/ChatInfoDrawer';
+
+// --- Enhanced Dummy Data with More Users ---
+const initialChatData = [
+  { id: 1, name: "Jagrit Pratap Bill", avatar: "https://i.pravatar.cc/150?u=1", online: true, messages: [{ sender: "them", text: "Hey, how's it going?" }], unread: 2 },
+  { id: 2, name: "Anjali Sharma", avatar: "https://i.pravatar.cc/150?u=2", online: false, messages: [{ sender: "them", text: "Can you send me the file?" }], unread: 0 },
+  { id: 3, name: "Rahul Verma", avatar: "https://i.pravatar.cc/150?u=3", online: true, messages: [{ sender: "them", text: "Let's meet at 5 PM." }], unread: 5 },
+  { id: 4, name: "Priya Singh", avatar: "https://i.pravatar.cc/150?u=4", online: false, messages: [{ sender: "them", text: "Okay, sounds good." }], unread: 0 },
+  { id: 5, name: "John Doe", avatar: "https://i.pravatar.cc/150?u=5", online: true, messages: [{ sender: "them", text: "Let's catch up later." }], unread: 1 },
+  { id: 6, name: "Mike Ross", avatar: "https://i.pravatar.cc/150?u=6", online: false, messages: [{ sender: "them", text: "See you at the meeting." }], unread: 0 },
+  { id: 7, name: "Harvey Specter", avatar: "https://i.pravatar.cc/150?u=7", online: true, messages: [{ sender: "them", text: "Get it done." }], unread: 3 },
+];
 
 const MessagesPage = () => {
+  const [chatData, setChatData] = useState(initialChatData);
+  const [selectedChatId, setSelectedChatId] = useState(1);
+  const [newMessage, setNewMessage] = useState("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  const selectedChat = chatData.find(c => c.id === selectedChatId);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(scrollToBottom, [selectedChat?.messages]);
+
+  const handleSendMessage = () => {
+    if (newMessage.trim() === "") return;
+    const messageObj = { sender: "me", text: newMessage };
+    const updatedChatData = chatData.map(chat => chat.id === selectedChatId ? { ...chat, messages: [...chat.messages, messageObj] } : chat);
+    setChatData(updatedChatData);
+    setNewMessage("");
+
+    setTimeout(() => {
+      const replyObj = { sender: "them", text: "Awesome! Thanks for the update." };
+      const repliedChatData = updatedChatData.map(chat => chat.id === selectedChatId ? { ...chat, messages: [...chat.messages, replyObj] } : chat);
+      setChatData(repliedChatData);
+    }, 1500);
+  };
+
   return (
-    <div className="bg-main-bg min-h-screen overflow-hidden">
-      {/* Top Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-10 px-6 pt-6 bg-main-bg">
-        <Navbar />
-      </div>
-
-      <div className="max-w-full mx-auto grid grid-cols-12 gap-6 pt-28 px-6 h-screen">
-        {/* Left Sidebar - 2 Columns */}
-        <aside className="col-span-2 sticky top-28 h-fit">
-          <Sidebar />
-        </aside>
-
-        {/* Message Content Area - 10 Columns (Replacing Feed, RightBar, and FriendsList space) */}
-        <div className="col-span-10 flex gap-6 h-[calc(100vh-8rem)] mb-6">
-          
-          {/* Chat List (Middle Column) */}
-          <section className="w-96 flex flex-col bg-card-bg rounded-2xl shadow-sm overflow-hidden border border-border-color">
-            <div className="p-4 border-b border-border-color">
-               <div className="relative">
-                  <input 
-                    type="text" 
-                    placeholder="Search" 
-                    className="w-full bg-gray-100 dark:bg-[#3a3b3c] p-3 pl-10 rounded-xl outline-none text-main-text"
-                  />
-                  <span className="absolute left-3 top-3 opacity-50">🔍</span>
-               </div>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto no-scrollbar">
-              {[1,2,3,4,5,6,7,8].map((i) => (
-                <div key={i} className="flex items-center gap-3 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer border-b border-border-color/50">
-                  <div className="w-12 h-12 rounded-full bg-gray-300 overflow-hidden shrink-0">
-                    <img src={`https://i.pravatar.cc/150?u=${i}`} alt="user" />
+    <div className="flex gap-4 h-full">
+      <section className="w-96 flex flex-col bg-bg-surface rounded-2xl shadow-sm overflow-hidden border border-border-ui">
+        <div className="p-4 border-b border-border-ui">
+           <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-sec" size={20} />
+              <input type="text" placeholder="Search Messages" className="w-full bg-bg-page p-3 pl-10 rounded-xl outline-none text-text-main"/>
+           </div>
+        </div>
+        <div className="flex-1 overflow-y-auto no-scrollbar">
+          {chatData.map((chat) => (
+            <div key={chat.id} onClick={() => setSelectedChatId(chat.id)} className={`flex items-start gap-3 p-4 cursor-pointer border-b border-border-ui/50 transition-colors ${selectedChatId === chat.id ? 'bg-[color:var(--chat-active-bg)]' : 'hover:bg-bg-page'}`}>
+              <div className="relative shrink-0">
+                <img src={chat.avatar} alt={chat.name} className="w-12 h-12 rounded-full" />
+                {chat.online && <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-bg-surface"></span>}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-bold truncate text-text-main">{chat.name}</h4>
+                <p className="text-sm text-text-sec truncate">{chat.messages[chat.messages.length - 1].text}</p>
+              </div>
+              <div className="flex flex-col items-end gap-1 shrink-0">
+                <span className="text-[10px] text-text-sec">11:26 am</span>
+                {chat.unread > 0 && (
+                  <div className="w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-lg flex items-center justify-center">
+                    {chat.unread}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between">
-                      <h4 className="font-bold truncate text-main-text">Jagrit Pratap Bill</h4>
-                      <span className="text-[10px] text-sec-text">11:26 am</span>
-                    </div>
-                    <p className="text-sm text-sec-text truncate">Thanks buddy, you too...</p>
-                  </div>
-                  <div className="w-5 h-5 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center">1</div>
-                </div>
-              ))}
+                )}
+              </div>
             </div>
-          </section>
+          ))}
+        </div>
+      </section>
 
-          {/* Main Chat Window (Right Column) */}
-          <main className="flex-1 flex flex-col bg-card-bg rounded-2xl shadow-sm overflow-hidden border border-border-color">
-            {/* Chat Header */}
-            <header className="p-4 border-b border-border-color flex justify-between items-center">
+      <main className="flex-1 flex flex-col bg-bg-surface rounded-2xl shadow-sm overflow-hidden border border-border-ui">
+        {selectedChat ? (
+          <>
+            <header className="p-4 border-b border-border-ui flex justify-between items-center">
               <div className="flex items-center gap-3">
-                 <div className="w-10 h-10 rounded-full bg-gray-300" />
+                 <img src={selectedChat.avatar} alt={selectedChat.name} className="w-10 h-10 rounded-full" />
                  <div>
-                    <h4 className="font-bold text-sm text-main-text">Jagrit Pratap Bill</h4>
-                    <p className="text-[10px] text-green-500 flex items-center gap-1 font-medium">
-                      <span className="w-2 h-2 bg-green-500 rounded-full" /> Active now
+                    <h4 className="font-bold text-sm text-text-main">{selectedChat.name}</h4>
+                    <p className={`text-[10px] flex items-center gap-1 font-medium ${selectedChat.online ? 'text-green-500' : 'text-text-sec'}`}>
+                      {selectedChat.online && <span className="w-2 h-2 bg-green-500 rounded-full" />} 
+                      {selectedChat.online ? 'Active now' : 'Offline'}
                     </p>
                  </div>
               </div>
-              <div className="flex gap-4 text-sec-text">
-                <button className="hover:text-blue-600 transition-colors">📞</button> 
-                <button className="hover:text-blue-600 transition-colors">📹</button> 
-                <button className="hover:text-blue-600 transition-colors">ℹ️</button>
+              <div className="flex gap-4 text-text-sec">
+                <button className="hover:text-action-blue transition-colors"><Phone size={20} /></button> 
+                <button className="hover:text-action-blue transition-colors"><Video size={20} /></button> 
+                <button onClick={() => setIsDrawerOpen(true)} className="hover:text-action-blue transition-colors"><Info size={20} /></button>
               </div>
             </header>
-
-            {/* Chat Messages Area */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white/5 dark:bg-black/5 no-scrollbar">
-               <div className="text-center text-xs text-sec-text mb-4">August 15, 2021</div>
-               
-               {/* Message Left */}
-               <div className="flex gap-3 max-w-[80%]">
-                  <div className="w-8 h-8 rounded-full bg-gray-300 shrink-0" />
-                  <div className="bg-blue-600 text-white p-4 rounded-2xl rounded-tl-none text-sm shadow-sm">
-                    Welcome to UI HUT! Whether you're opening a new online store...
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-bg-page/50 no-scrollbar">
+              {selectedChat.messages.map((msg, index) => (
+                <div key={index} className={`flex gap-3 max-w-[80%] ${msg.sender === 'me' ? 'ml-auto flex-row-reverse' : ''}`}>
+                  <img src={msg.sender === 'me' ? 'https://i.pravatar.cc/40?u=saleh' : selectedChat.avatar} alt="avatar" className="w-8 h-8 rounded-full shrink-0" />
+                  <div className={`p-4 rounded-2xl text-sm shadow-sm ${msg.sender === 'me' ? 'bg-bg-card text-text-main border border-border-ui rounded-tr-none' : 'bg-action-blue text-white rounded-tl-none'}`}>
+                    {msg.text}
                   </div>
-               </div>
-
-               {/* Message Right (User) */}
-               <div className="flex gap-3 max-w-[80%] ml-auto flex-row-reverse">
-                  <div className="w-8 h-8 rounded-full bg-gray-300 shrink-0" />
-                  <div className="bg-chat-bubble text-main-text p-4 rounded-2xl rounded-tr-none text-sm shadow-sm border border-border-color">
-                    After you register for a free trial, follow the initial setup guide...
-                  </div>
-               </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
             </div>
-
-            {/* Message Input Bar */}
-            <footer className="p-4 border-t border-border-color">
-              <div className="bg-gray-100 dark:bg-[#3a3b3c] rounded-xl p-2 flex items-center gap-3">
-                 <input 
-                   type="text" 
-                   placeholder="Type something here..." 
-                   className="flex-1 bg-transparent px-4 py-2 outline-none text-main-text"
-                 />
-                 <button className="p-2 text-sec-text hover:text-blue-600">📎</button>
-                 <button className="bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 transition-colors">➤</button>
+            <footer className="p-4 border-t border-border-ui">
+              <div className="bg-bg-page rounded-xl p-2 flex items-center gap-3">
+                 <input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()} type="text" placeholder="Type something here..." className="flex-1 bg-transparent px-4 py-2 outline-none text-text-main"/>
+                 <button className="p-2 text-text-sec hover:text-action-blue"><Paperclip size={20} /></button>
+                 <button className="p-2 text-text-sec hover:text-action-blue"><Smile size={20} /></button>
+                 <button onClick={handleSendMessage} className="bg-action-blue text-white p-3 rounded-xl hover:opacity-90"><Send size={16} /></button>
               </div>
             </footer>
-          </main>
-        </div>
-      </div>
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-full text-text-sec"><p>Select a chat to start messaging</p></div>
+        )}
+      </main>
+      
+      <ChatInfoDrawer user={selectedChat} isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
     </div>
   );
 };

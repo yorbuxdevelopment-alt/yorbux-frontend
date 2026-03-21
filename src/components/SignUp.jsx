@@ -1,82 +1,100 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { ChevronDown, Mail, User, Lock, EyeOff, Calendar, Moon, Sun } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle, faApple } from '@fortawesome/free-brands-svg-icons';
 
 const SignUp = () => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif", backgroundColor: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', width: '100%' }}>
+    <div className="min-h-screen bg-bg-page flex flex-col items-center font-sans">
       
-      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}>
-        <button style={{ display: 'flex', alignItems: 'center', columnGap: '0.5rem', fontSize: '0.875rem', color: '#6B7280', border: '1px solid #E5E7EB', borderRadius: '0.5rem', padding: '0.375rem 0.75rem', backgroundColor: 'white', boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)' }}>
-          <span>English (UK)</span>
-          <i className="fa-solid fa-chevron-down" style={{ fontSize: '0.75rem' }}></i>
-        </button>
+      <div className="w-full max-w-[1200px] flex justify-between items-center p-6">
+        <div className="flex items-center gap-2">
+          <img src={theme === 'dark' ? '/logo/yor-bux-dark-logo.png' : '/logo/yor-bux-primary-logo.png'} alt="Yorbux" className="h-8" />
+        </div>
+        <div className="flex items-center gap-4">
+          <button className="flex items-center gap-2 text-text-sec text-sm font-medium bg-bg-surface px-4 py-2 rounded-xl border border-border-ui shadow-sm">
+            English (UK) <ChevronDown size={16} />
+          </button>
+          <button onClick={toggleTheme} className="p-2 rounded-full bg-bg-surface border border-border-ui text-text-sec">
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        </div>
       </div>
 
-      <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', display: 'flex', alignItems: 'center', columnGap: '0.5rem' }}>
-        <div style={{ width: '2rem', height: '2rem', backgroundColor: '#2563EB', borderRadius: '9999px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <i className="fa-solid fa-check" style={{ color: 'white', fontSize: '0.75rem' }}></i>
-        </div>
-        <span style={{ fontWeight: 'bold', color: '#1F2937', fontSize: '1.125rem' }}>Meetmax</span>
-      </div>
-
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#1E293B', marginBottom: '0.5rem' }}>Create an Account</h1>
-          <p style={{ color: '#6B7280' }}>Start your journey with us!</p>
+      <div className="flex-1 flex flex-col items-center justify-center w-full px-4 py-10">
+        <div className="text-center mb-8">
+          <h1 className="text-text-main text-[32px] font-bold mb-2">Getting Started</h1>
+          <p className="text-text-sec text-[15px]">Create an account to continue and connect with the people.</p>
         </div>
 
-        <div style={{ backgroundColor: 'white', padding: '2.5rem', borderRadius: '1.5rem', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', width: '100%', maxWidth: '32rem' }}>
+        <div className="bg-bg-surface w-full max-w-[580px] rounded-[32px] p-10 md:p-14 shadow-sm border border-border-ui/50">
           
-          <form action="#" style={{ display: 'flex', flexDirection: 'column', rowGap: '1.25rem' }}>
-            <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', top: '0', bottom: '0', left: '0', paddingLeft: '1rem', display: 'flex', alignItems: 'center', color: '#9CA3AF' }}>
-                <i className="fa-regular fa-face-smile"></i>
-              </span>
-              <input type="text" style={{ color: '#1F2937', backgroundColor: '#F9FAFB', width: '100%', paddingLeft: '2.75rem', paddingRight: '1rem', paddingTop: '0.75rem', paddingBottom: '0.75rem', border: '1px solid #E5E7EB', borderRadius: '0.75rem', outline: 'none', transition: 'all 150ms' }} placeholder="Your name" />
+          <div className="flex gap-4 mb-8">
+            <button className="flex-1 flex items-center justify-center gap-3 bg-bg-page hover:bg-border-ui/50 py-3.5 rounded-2xl text-text-main font-bold text-[13px] transition-all border border-border-ui">
+              <FontAwesomeIcon icon={faGoogle} className="text-lg" />
+              Log in with Google
+            </button>
+            <button className="flex-1 flex items-center justify-center gap-3 bg-bg-page hover:bg-border-ui/50 py-3.5 rounded-2xl text-text-main font-bold text-[13px] transition-all border border-border-ui">
+              <FontAwesomeIcon icon={faApple} className="text-xl" />
+              Log in with Apple
+            </button>
+          </div>
+
+          <div className="flex items-center gap-4 mb-8">
+            <div className="flex-1 h-[1px] bg-border-ui"></div>
+            <span className="text-text-sec text-[12px] font-bold tracking-widest">OR</span>
+            <div className="flex-1 h-[1px] bg-border-ui"></div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
+              <input type="email" placeholder="Your Email" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue outline-none"/>
             </div>
-            <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', top: '0', bottom: '0', left: '0', paddingLeft: '1rem', display: 'flex', alignItems: 'center', color: '#9CA3AF' }}>
-                <i className="fa-solid fa-at"></i>
-              </span>
-              <input type="email" defaultValue="admin@demo.com" style={{ color: '#1F2937', backgroundColor: '#F9FAFB', width: '100%', paddingLeft: '2.75rem', paddingRight: '1rem', paddingTop: '0.75rem', paddingBottom: '0.75rem', border: '1px solid #E5E7EB', borderRadius: '0.75rem', outline: 'none', transition: 'all 150ms' }} placeholder="Enter your email" />
+            <p className="text-red-500 text-[11px] font-bold pl-1">Please enter a valid email address.</p>
+
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
+              <input type="text" placeholder="Your Name" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue outline-none"/>
             </div>
-            <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', top: '0', bottom: '0', left: '0', paddingLeft: '1rem', display: 'flex', alignItems: 'center', color: '#9CA3AF' }}>
-                <i className="fa-solid fa-lock"></i>
-              </span>
-              <input type="password" defaultValue="admin@demo.com" style={{ color: '#1F2937', backgroundColor: '#F9FAFB', width: '100%', paddingLeft: '2.75rem', paddingRight: '1rem', paddingTop: '0.75rem', paddingBottom: '0.75rem', border: '1px solid #E5E7EB', borderRadius: '0.75rem', outline: 'none', transition: 'all 150ms' }} placeholder="Create Password" />
+
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
+              <input type="password" placeholder="Create Password" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-12 text-text-main focus:border-action-blue outline-none"/>
+              <EyeOff className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec cursor-pointer" size={18} />
             </div>
-            
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <div style={{ position: 'relative', flex: 1 }}>
-                <span style={{ position: 'absolute', top: '0', bottom: '0', left: '0', paddingLeft: '1rem', display: 'flex', alignItems: 'center', color: '#9CA3AF' }}>
-                  <i className="fa-regular fa-calendar"></i>
-                </span>
-                <input type="text" onFocus={(e) => e.target.type='date'} onBlur={(e) => e.target.type='text'} style={{ color: '#1F2937', backgroundColor: '#F9FAFB', width: '100%', paddingLeft: '2.75rem', paddingRight: '1rem', paddingTop: '0.75rem', paddingBottom: '0.75rem', border: '1px solid #E5E7EB', borderRadius: '0.75rem', outline: 'none', transition: 'all 150ms' }} placeholder="Date of Birth" />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative">
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
+                <input type="text" placeholder="Date of birth" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main outline-none"/>
               </div>
-              <div style={{ display: 'flex', gap: '1rem', color: '#6B7280' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                  <i className="fa-solid fa-mars"></i>
-                  <input type="radio" name="gender" value="male" />
-                  <span>Male</span>
+              <div className="flex items-center justify-around border border-border-ui rounded-2xl py-4 px-4 bg-bg-surface">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="gender" className="w-4 h-4 text-action-blue focus:ring-action-blue" defaultChecked />
+                  <span className="text-text-main text-[13px] font-bold">Male</span>
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                  <i className="fa-solid fa-venus"></i>
-                  <input type="radio" name="gender" value="female" />
-                  <span>Female</span>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="gender" className="w-4 h-4 text-action-blue focus:ring-action-blue" />
+                  <span className="text-text-main text-[13px] font-bold">Female</span>
                 </label>
               </div>
             </div>
 
-            <button type="submit" style={{ width: '100%', backgroundColor: '#2563EB', color: 'white', fontWeight: '600', padding: '1rem 0', borderRadius: '0.75rem', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)', transition: 'all 150ms' }}>
+            <button className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all mt-4">
               Sign Up
             </button>
-          </form>
-        </div>
+          </div>
 
-        <p style={{ marginTop: '2rem', color: '#6B7280', fontSize: '0.875rem', fontWeight: '500' }}>
-          Already have an account? <Link to="/" style={{ color: '#2563EB', textDecoration: 'none', fontWeight: '600' }}>Sign In</Link>
-        </p>
+          <div className="text-center mt-8">
+             <p className="text-text-main text-[14px] font-medium">
+                Already have an account? <button className="text-action-blue font-bold hover:underline">Sign In</button>
+             </p>
+          </div>
+        </div>
       </div>
     </div>
   );

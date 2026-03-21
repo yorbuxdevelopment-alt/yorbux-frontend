@@ -1,95 +1,88 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ChevronDown, Mail, Lock, Eye, Moon, Sun } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle, faApple } from '@fortawesome/free-brands-svg-icons';
 
-// Note: The onLogin prop is passed from App.jsx to handle the login state
 const SignIn = ({ onLogin }) => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <div className="bg-white font-sans flex items-center justify-center min-h-screen w-full">
+    <div className="min-h-screen bg-bg-page flex flex-col items-center font-sans">
       
-      <div className="absolute top-6 right-6">
-        <button className="flex items-center space-x-2 text-body-sm text-gray-500 border rounded-lg px-3 py-1.5 bg-white shadow-sm">
-          <span>English (UK)</span>
-          <i className="fa-solid fa-chevron-down text-xs"></i>
-        </button>
+      <div className="w-full max-w-[1200px] flex justify-between items-center p-6">
+        <div className="flex items-center gap-2">
+          <img src={theme === 'dark' ? '/logo/yor-bux-dark-logo.png' : '/logo/yor-bux-primary-logo.png'} alt="Yorbux" className="h-8" />
+        </div>
+        <div className="flex items-center gap-4">
+          <button className="flex items-center gap-2 text-text-sec text-sm font-medium bg-bg-surface px-4 py-2 rounded-xl border border-border-ui shadow-sm">
+            English (UK) <ChevronDown size={16} />
+          </button>
+          <button onClick={toggleTheme} className="p-2 rounded-full bg-bg-surface border border-border-ui text-text-sec">
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        </div>
       </div>
 
-      <div className="absolute top-6 left-6 flex items-center space-x-2">
-        <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-          <i className="fa-solid fa-check text-white text-xs"></i>
-        </div>
-        <span className="font-bold text-h3">Meetmax</span>
-      </div>
-
-      <div className="w-full flex flex-col items-center p-4">
-        {/* Dummy Credentials Info Box */}
-        <div className="w-full max-w-lg bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg mb-6 text-center">
-          <p className="font-semibold text-body">For Demo Purposes</p>
-          <p className="text-body-sm">Email: <span className="font-medium">admin@demo.com</span></p>
-          <p className="text-body-sm">Password: <span className="font-medium">password123</span></p>
-        </div>
-
+      <div className="flex-1 flex flex-col items-center justify-center w-full px-4 mt-[-50px]">
         <div className="text-center mb-10">
-          <h1 className="text-display-md font-semibold text-slate-800 mb-2">Sign In</h1>
-          <p className="text-body text-gray-500">Welcome back, you've been missed!</p>
+          <h1 className="text-text-main text-[32px] font-bold mb-2">Sign In</h1>
+          <p className="text-text-sec text-[16px]">Welcome back, you've been missed!</p>
         </div>
 
-        <div className="bg-white p-10 rounded-3xl shadow-xl shadow-gray-200/50 w-full max-w-lg">
+        <div className="bg-bg-surface w-full max-w-[520px] rounded-[32px] p-12 shadow-sm border border-border-ui/50">
           
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <button className="flex items-center justify-center space-x-2 border border-gray-100 bg-gray-50/50 py-3 rounded-xl hover:bg-gray-100 transition">
-              <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
-              <span className="text-body-sm font-semibold text-gray-700">Log in with Google</span>
+          <div className="flex gap-4 mb-8">
+            <button className="flex-1 flex items-center justify-center gap-3 bg-bg-page hover:bg-border-ui/50 py-3.5 rounded-2xl text-text-main font-bold text-[14px] transition-all border border-border-ui">
+              <FontAwesomeIcon icon={faGoogle} className="text-lg" />
+              Log in with Google
             </button>
-            <button className="flex items-center justify-center space-x-2 border border-gray-100 bg-gray-50/50 py-3 rounded-xl hover:bg-gray-100 transition">
-              <i className="fa-brands fa-apple text-h2"></i>
-              <span className="text-body-sm font-semibold text-gray-700">Log in with Apple</span>
+            <button className="flex-1 flex items-center justify-center gap-3 bg-bg-page hover:bg-border-ui/50 py-3.5 rounded-2xl text-text-main font-bold text-[14px] transition-all border border-border-ui">
+              <FontAwesomeIcon icon={faApple} className="text-xl" />
+              Log in with Apple
             </button>
           </div>
 
-          <div className="relative flex items-center mb-8">
-            <div className="flex-grow border-t border-gray-200"></div>
-            <span className="flex-shrink mx-4 text-caption font-bold text-gray-400">OR</span>
-            <div className="flex-grow border-t border-gray-200"></div>
+          <div className="flex items-center gap-4 mb-8">
+            <div className="flex-1 h-[1px] bg-border-ui"></div>
+            <span className="text-text-sec text-[12px] font-bold">OR</span>
+            <div className="flex-1 h-[1px] bg-border-ui"></div>
           </div>
 
-          {/* The form now uses a button with an onClick handler */}
           <div className="space-y-5">
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
-                <i className="fa-solid fa-at"></i>
-              </span>
-              <input type="email" defaultValue="admin@demo.com" className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-gray-50 text-gray-800" placeholder="Email" />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={20} />
+              <input type="email" placeholder="ahmed@gmail.com" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:ring-2 focus:ring-action-blue/20 focus:border-action-blue transition-all outline-none"/>
             </div>
 
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
-                <i className="fa-solid fa-lock"></i>
-              </span>
-              <input type="password" defaultValue="password123" className="w-full pl-11 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-gray-50 text-gray-800" placeholder="Password" />
-              <span className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 cursor-pointer">
-                <i className="fa-regular fa-eye"></i>
-              </span>
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={20} />
+              <input type="password" placeholder="hwahmed07" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-12 text-text-main focus:ring-2 focus:ring-action-blue/20 focus:border-action-blue transition-all outline-none"/>
+              <Eye className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec cursor-pointer" size={20} />
             </div>
 
-            <div className="flex items-center justify-between text-body-sm">
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                <span className="text-gray-500 font-medium">Remember me</span>
+            <div className="flex justify-between items-center px-1">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input type="checkbox" className="w-4 h-4 rounded border-border-ui text-action-blue focus:ring-action-blue" />
+                <span className="text-text-main text-[14px] font-medium group-hover:text-action-blue">Remember me</span>
               </label>
-              <Link to="/forgot-password" className="text-gray-500 font-medium hover:text-blue-600">Forgot Password?</Link>
+              <Link to="/forgot-password">
+                <button className="text-action-blue text-[14px] font-bold hover:underline">Forgot Password?</button>
+              </Link>
             </div>
 
-            <button
-              onClick={onLogin}
-              className="w-full bg-blue-600 text-white font-semibold py-4 rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 transform active:scale-[0.98] transition-all"
-            >
+            <button onClick={onLogin} className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all mt-4">
               Sign In
             </button>
           </div>
         </div>
 
-        <p className="mt-8 text-body-sm font-medium text-gray-500">
-          You haven't any account? <Link to="/signup" className="text-blue-600 hover:underline">Sign Up</Link>
+        <p className="mt-8 text-text-main text-[15px] font-medium">
+          You haven't any account? 
+          <Link to="/signup">
+            <button className="text-action-blue font-bold hover:underline ml-1">Sign Up</button>
+          </Link>
         </p>
       </div>
     </div>

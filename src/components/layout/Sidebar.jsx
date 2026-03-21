@@ -1,41 +1,50 @@
 import { Link, useLocation } from 'react-router-dom';
+import { Home, Users, MessageSquareMore, Bell, Compass, User, Settings, LogOut } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ handleLogout }) => {
     const location = useLocation();
     const menuItems = [
-        { name: 'Feed', icon: '🏠', path: '/' },
-        { name: 'My community', icon: '👥', path: '/community' },
-        { name: 'Messages', icon: '💬', path: '/messages' },
-        { name: 'Notification', icon: '🔔', count: 2, path: '/notifications' },
-        { name: 'Explore', icon: '🌍', path: '/explore' },
-        { name: 'Profile', icon: '👤', path: '/profile' },
-        { name: 'Settings', icon: '⚙️', path: '/settings' },
+        { name: 'Feed', icon: <Home size={20} />, path: '/' },
+        { name: 'My community', icon: <Users size={20} />, path: '/community' },
+        { name: 'Messages', icon: <MessageSquareMore size={20} />, path: '/messages' },
+        { name: 'Notification', icon: <Bell size={20} />, count: 2, path: '/notifications' },
+        // { name: 'Explore', icon: <Compass size={20} />, path: '/explore' },
+        { name: 'Profile', icon: <User size={20} />, path: '/profile' },
+        { name: 'Settings', icon: <Settings size={20} />, path: '/settings' },
     ];
 
     return (
-        <nav className="bg-card-bg rounded-xl p-4 shadow-sm border border-border-color">
-            <ul className="space-y-2">
+        <nav className="bg-bg-surface p-6 shadow-sm h-full flex flex-col">
+            <ul className="space-y-4">
                 {menuItems.map((item) => (
                     <Link to={item.path} key={item.name}>
                         <li
-                            className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all ${
-                                location.pathname === item.path ? 'bg-blue-600/10 dark:bg-blue-600/20 text-blue-600' : 'text-sec-text hover:bg-gray-100 dark:hover:bg-gray-800'
+                            className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all text-base ${
+                                location.pathname === item.path 
+                                ? 'bg-sidebar-active-bg text-sidebar-active-text-color font-bold' 
+                                : 'text-text-sec hover:bg-bg-page'
                             }`}
                         >
-                            <div className="flex items-center gap-3">
-                                <span>{item.icon}</span>
+                            <div className="flex items-center gap-4">
+                                {item.icon}
                                 <span className="font-medium">{item.name}</span>
                             </div>
                             {item.count && (
-                                <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
                                     {item.count}
                                 </span>
                             )}
                         </li>
                     </Link>
                 ))}
-                <li className="flex items-center gap-3 p-3 text-sec-text hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg mt-10">
-                    <span>🚪</span> <span>Logout</span>
+            </ul>
+            <ul className="mt-auto">
+                <li 
+                    onClick={handleLogout}
+                    className="flex items-center gap-4 p-4 text-text-sec hover:bg-bg-page rounded-lg mt-6 cursor-pointer text-base"
+                >
+                    <LogOut size={20} />
+                    <span className="font-medium">Logout</span>
                 </li>
             </ul>
         </nav>

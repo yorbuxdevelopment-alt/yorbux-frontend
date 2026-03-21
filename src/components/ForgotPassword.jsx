@@ -1,50 +1,59 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ChevronDown, Mail, ChevronLeft, Moon, Sun } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const ForgotPassword = () => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif", backgroundColor: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', width: '100%' }}>
+    <div className="min-h-screen bg-bg-page flex flex-col items-center font-sans">
       
-      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}>
-        <button style={{ display: 'flex', alignItems: 'center', columnGap: '0.5rem', fontSize: '0.875rem', color: '#6B7280', border: '1px solid #E5E7EB', borderRadius: '0.5rem', padding: '0.375rem 0.75rem', backgroundColor: 'white', boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)' }}>
-          <span>English (UK)</span>
-          <i className="fa-solid fa-chevron-down" style={{ fontSize: '0.75rem' }}></i>
-        </button>
-      </div>
-
-      <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', display: 'flex', alignItems: 'center', columnGap: '0.5rem' }}>
-        <div style={{ width: '2rem', height: '2rem', backgroundColor: '#2563EB', borderRadius: '9999px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <i className="fa-solid fa-check" style={{ color: 'white', fontSize: '0.75rem' }}></i>
+      <div className="w-full max-w-[1200px] flex justify-between items-center p-6">
+        <div className="flex items-center gap-2">
+          <img src={theme === 'dark' ? '/logo/yor-bux-dark-logo.png' : '/logo/yor-bux-primary-logo.png'} alt="Yorbux" className="h-8" />
         </div>
-        <span style={{ fontWeight: 'bold', color: '#1F2937', fontSize: '1.125rem' }}>Meetmax</span>
+        <div className="flex items-center gap-4">
+          <button className="flex items-center gap-2 text-text-sec text-sm font-medium bg-bg-surface px-4 py-2 rounded-xl border border-border-ui shadow-sm">
+            English (UK) <ChevronDown size={16} />
+          </button>
+          <button onClick={toggleTheme} className="p-2 rounded-full bg-bg-surface border border-border-ui text-text-sec">
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        </div>
       </div>
 
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem' }}>
-        <div style={{ backgroundColor: 'white', padding: '2.5rem', borderRadius: '1.5rem', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', width: '100%', maxWidth: '32rem' }}>
-          
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#1E293B', marginBottom: '0.5rem' }}>Forgot Password?</h1>
-            <p style={{ color: '#6B7280' }}>Enter your details to receive a reset link</p>
-          </div>
+      <div className="flex-1 flex flex-col items-center justify-center w-full px-4 mt-[-60px]">
+        <div className="text-center mb-8">
+          <h1 className="text-text-main text-[32px] font-bold mb-2 tracking-tight">Forgot password?</h1>
+          <p className="text-text-sec text-[15px] font-medium">Enter your details to receive a reset link</p>
+        </div>
 
-          <form action="#" style={{ display: 'flex', flexDirection: 'column', rowGap: '1.25rem' }}>
-            <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', top: '0', bottom: '0', left: '0', paddingLeft: '1rem', display: 'flex', alignItems: 'center', color: '#9CA3AF' }}>
-                <i className="fa-solid fa-at"></i>
-              </span>
-              <input type="email" style={{ color: '#1F2937', backgroundColor: '#F9FAFB', width: '100%', paddingLeft: '2.75rem', paddingRight: '1rem', paddingTop: '0.75rem', paddingBottom: '0.75rem', border: '1px solid #E5E7EB', borderRadius: '0.75rem', outline: 'none', transition: 'all 150ms' }} placeholder="Your Email" />
+        <div className="bg-bg-surface w-full max-w-[480px] rounded-[32px] p-10 md:p-14 shadow-sm border border-border-ui/50">
+          <div className="space-y-6">
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
+              <input 
+                type="email" 
+                placeholder="ahmed@gmail.com" 
+                className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
+              />
             </div>
 
-            <button type="submit" style={{ width: '100%', backgroundColor: '#2563EB', color: 'white', fontWeight: '600', padding: '1rem 0', borderRadius: '0.75rem', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)', transition: 'all 150ms' }}>
+            <button className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all">
               Send
             </button>
-          </form>
-        </div>
 
-        <Link to="/" style={{ marginTop: '2rem', color: '#2563EB', fontSize: '0.875rem', fontWeight: '600', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <i className="fa-solid fa-arrow-left-long"></i>
-          Back to Sign In
-        </Link>
+            <div className="text-center">
+              <Link to="/signin">
+                <button className="flex items-center justify-center gap-2 text-action-blue text-[14px] font-bold hover:underline mx-auto">
+                  <ChevronLeft size={16} strokeWidth={3} />
+                  Back to Sign In
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

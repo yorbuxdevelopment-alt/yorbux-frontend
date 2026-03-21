@@ -1,0 +1,1 @@
+npm install @fortawesome/react-fontawesome @fortawesome/free-brands-svg-icons

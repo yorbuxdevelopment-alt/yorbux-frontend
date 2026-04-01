@@ -11,6 +11,8 @@ import CommunityPage from './pages/CommunityPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import ExplorePage from './pages/ExplorePage';
+import ResetPassword from './components/ResetPassword';
+import VerifyOTP from './components/VerifyOTP';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -31,6 +33,8 @@ function App() {
       <Route path="/signin" element={!isAuthenticated ? <SignIn onLogin={handleLogin} /> : <Navigate to="/" />} />
       <Route path="/signup" element={!isAuthenticated ? <SignUp /> : <Navigate to="/" />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/verify-otp" element={<VerifyOTP />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {isAuthenticated ? (
         <Route path="/" element={<MainLayout handleLogout={handleLogout} />}>

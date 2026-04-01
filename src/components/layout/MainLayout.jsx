@@ -31,7 +31,7 @@ function MainLayout({ handleLogout }) {
           </div>
         </aside>
 
-        <main className="flex-1 overflow-y-auto no-scrollbar p-4">
+        <main className="flex-1 overflow-y-auto no-scrollbar p-8">
           <Outlet />
         </main>
 

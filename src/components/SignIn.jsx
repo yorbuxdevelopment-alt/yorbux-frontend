@@ -1,17 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, Mail, Lock, Eye, Moon, Sun } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+// import { useTheme } from '../context/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle, faApple } from '@fortawesome/free-brands-svg-icons';
+// import { faGoogle, faApple } from '@fortawesome/free-brands-svg-icons';
 
 const SignIn = ({ onLogin }) => {
-  const { theme, toggleTheme } = useTheme();
+  // const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="min-h-screen bg-bg-page flex flex-col items-center font-sans">
       
-      <div className="w-full max-w-[1200px] flex justify-between items-center p-6">
+      {/* <div className="w-full max-w-[1200px] flex justify-between items-center p-6">
         <div className="flex items-center gap-2">
           <img src={theme === 'dark' ? '/logo/yor-bux-dark-logo.png' : '/logo/yor-bux-primary-logo.png'} alt="Yorbux" className="h-8" />
         </div>
@@ -23,17 +23,19 @@ const SignIn = ({ onLogin }) => {
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div className="flex-1 flex flex-col items-center justify-center w-full px-4 mt-[-50px]">
-        <div className="text-center mb-10">
-          <h1 className="text-text-main text-[32px] font-bold mb-2">Sign In</h1>
-          <p className="text-text-sec text-[16px]">Welcome back, you've been missed!</p>
-        </div>
 
         <div className="bg-bg-surface w-full max-w-[520px] rounded-[32px] p-12 shadow-sm border border-border-ui/50">
           
-          <div className="flex gap-4 mb-8">
+          <div className="text-center mb-10">
+            <img src= '/logo/yor-bux-primary-logo.png' alt="Yorbux" className="h-20 mx-auto mb-4" />
+            <h3 className="text-text-main text-[32px] font-bold mb-2">Welcome</h3>
+            <p className="text-text-sec text-[16px]">Stay ahead in your career. Sign in to discover new opportunities and keep up with the latest in your professional world</p>
+          </div>
+
+          {/* <div className="flex gap-4 mb-8">
             <button className="flex-1 flex items-center justify-center gap-3 bg-bg-page hover:bg-border-ui/50 py-3.5 rounded-2xl text-text-main font-bold text-[14px] transition-all border border-border-ui">
               <FontAwesomeIcon icon={faGoogle} className="text-lg" />
               Log in with Google
@@ -42,13 +44,13 @@ const SignIn = ({ onLogin }) => {
               <FontAwesomeIcon icon={faApple} className="text-xl" />
               Log in with Apple
             </button>
-          </div>
+          </div> */}
 
-          <div className="flex items-center gap-4 mb-8">
+          {/* <div className="flex items-center gap-4 mb-8">
             <div className="flex-1 h-[1px] bg-border-ui"></div>
             <span className="text-text-sec text-[12px] font-bold">OR</span>
             <div className="flex-1 h-[1px] bg-border-ui"></div>
-          </div>
+          </div> */}
 
           <div className="space-y-5">
             <div className="relative">
@@ -76,14 +78,14 @@ const SignIn = ({ onLogin }) => {
               Sign In
             </button>
           </div>
-        </div>
 
-        <p className="mt-8 text-text-main text-[15px] font-medium">
-          You haven't any account? 
-          <Link to="/signup">
-            <button className="text-action-blue font-bold hover:underline ml-1">Sign Up</button>
-          </Link>
-        </p>
+          <p className="mt-8 text-center text-text-main text-[15px] font-medium">
+            You haven't any account? 
+            <Link to="/signup">
+              <button className="text-action-blue font-bold hover:underline ml-1">Register now</button>
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

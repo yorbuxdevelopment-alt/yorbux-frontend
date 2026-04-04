@@ -1,14 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, ChevronLeft } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { forgotPassword } from '../redux/authActions';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
-    // API call for sending OTP will go here
-    navigate('/verify-otp');
+    setError('');
+    setSuccess('');
+    setLoading(true);
+    try {
+      await dispatch(forgotPassword({ email })).unwrap();
+      setSuccess('OTP sent successfully!');
+      localStorage.setItem('resetEmail', email); // Save email for verification step
+      setTimeout(() => navigate('/verify-otp'), 1500);
+    } catch (err) {
+      console.error('Forgot Password Error:', err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -26,13 +45,18 @@ const ForgotPassword = () => {
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
               <input 
                 type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="ahmed@gmail.com" 
+                required
                 className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
               />
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {success && <p className="text-green-500 text-sm">{success}</p>}
 
-            <button type="submit" className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all">
-              Send
+            <button type="submit" disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all disabled:opacity-70">
+              {loading ? 'Sending...' : 'Send'}
             </button>
 
             <div className="text-center">

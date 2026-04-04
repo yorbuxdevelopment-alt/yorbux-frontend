@@ -1,15 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { KeyRound, Lock, ChevronLeft } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { resetPassword } from '../redux/authActions';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
 
-  const handlePasswordReset = (e) => {
+  const handlePasswordReset = async (e) => {
     e.preventDefault();
-    // Yahan par aap New Password update karne ki API call karenge
-    // Success hone ke baad SignIn page par redirect karenge:
-    navigate('/signin');
+    if (newPassword !== confirmPassword) {
+      return setError('Passwords do not match');
+    }
+
+    setError('');
+    setSuccess('');
+    setLoading(true);
+    
+    const email = localStorage.getItem('resetEmail');
+    const resetToken = localStorage.getItem('resetToken'); // Agar backend token expect karta hai
+
+    try {
+      await dispatch(resetPassword({ email, newPassword, resetToken })).unwrap();
+      setSuccess('Password reset successfully!');
+      localStorage.removeItem('resetEmail');
+      localStorage.removeItem('resetToken');
+      setTimeout(() => navigate('/signin'), 2000);
+    } catch (err) {
+      console.error('Reset Password Error:', err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,6 +56,8 @@ const ResetPassword = () => {
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
               <input 
                 type="password" 
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="New Password" 
                 required
                 className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
@@ -39,14 +69,18 @@ const ResetPassword = () => {
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
               <input 
                 type="password" 
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm New Password" 
                 required
                 className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
               />
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {success && <p className="text-green-500 text-sm">{success}</p>}
 
-            <button type="submit" className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all mt-2">
-              Reset Password
+            <button type="submit" disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all mt-2 disabled:opacity-70">
+              {loading ? 'Resetting...' : 'Reset Password'}
             </button>
 
             <div className="text-center mt-2">

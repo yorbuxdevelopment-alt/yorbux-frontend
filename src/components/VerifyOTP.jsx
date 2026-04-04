@@ -1,15 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { KeyRound, ChevronLeft } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { verifyOTP } from '../redux/authActions';
 
 const VerifyOTP = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [otp, setOtp] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
 
-  const handleVerify = (e) => {
+  const handleVerify = async (e) => {
     e.preventDefault();
-    // Yahan OTP verify karne ki API call hogi
-    // Verify hone ke baad Reset Password par redirect karenge
-    navigate('/reset-password');
+    setError('');
+    setSuccess('');
+    setLoading(true);
+    
+    const email = localStorage.getItem('resetEmail');
+
+    try {
+      const data = await dispatch(verifyOTP({ email, otp })).unwrap();
+      setSuccess('OTP verified!');
+      if (data.resetToken) localStorage.setItem('resetToken', data.resetToken); // Optional: if backend gives a token
+      setTimeout(() => navigate('/reset-password'), 1500);
+    } catch (err) {
+      console.error('Verify OTP Error:', err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -27,15 +48,19 @@ const VerifyOTP = () => {
               <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
               <input 
                 type="text" 
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
                 placeholder="Enter 6-digit OTP" 
                 required
                 maxLength={6}
                 className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none tracking-widest"
               />
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {success && <p className="text-green-500 text-sm">{success}</p>}
 
-            <button type="submit" className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all">
-              Verify OTP
+            <button type="submit" disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all disabled:opacity-70">
+              {loading ? 'Verifying...' : 'Verify OTP'}
             </button>
 
             <div className="text-center">

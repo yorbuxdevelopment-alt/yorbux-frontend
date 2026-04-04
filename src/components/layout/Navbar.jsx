@@ -12,43 +12,48 @@ const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout }) =
 
     return (
         <>
-            <header className="bg-bg-surface rounded-lg p-4 grid grid-cols-12 items-center gap-4">
-                <div className="col-span-3 flex items-center gap-4">
-                    <button onClick={() => setIsLeftSidebarOpen(prev => !prev)} className="lg:hidden text-text-sec hover:text-action-blue flex-shrink-0">
-                        <Menu size={24} />
+            <header className="bg-bg-surface rounded-xl p-4 flex items-center justify-between gap-4">
+                {/* Left Side: Mobile Menu, Logo & Search */}
+                <div className="flex items-center gap-4 sm:gap-6 flex-1">
+                    <button onClick={() => setIsLeftSidebarOpen(prev => !prev)} className="md:hidden text-text-sec hover:text-action-blue flex-shrink-0">
+                        <Users size={24} />
                     </button>
                     <img src={logoSrc} alt="Yorbux" className="h-8 flex-shrink-0 hidden sm:block" />
+                    
+                    {/* Search Bar - Next to Logo */}
+                    <div className="relative hidden lg:block w-full max-w-sm ml-2">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
+                        <input type="text" placeholder="Search..." className="w-full bg-bg-page text-text-main py-2.5 pl-11 pr-4 rounded-xl outline-none text-sm border border-border-ui focus:ring-1 focus:ring-action-blue transition-all" />
+                    </div>
                 </div>
-                <div className="col-span-3 relative hidden lg:block">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={20} />
-                    <input type="text" placeholder="Search..." className="w-full bg-bg-page text-text-main p-3 rounded-lg outline-none pl-12 text-sm border border-border-ui" />
-                </div>
-                <div className="col-span-6 flex items-center justify-end gap-4 sm:gap-6">
-                    <button onClick={() => setIsPostModalOpen(true)} className="bg-action-blue text-white p-2 rounded-full hover:opacity-90 shadow-lg shadow-action-blue/20">
+
+                {/* Right Side: Actions & Profile */}
+                <div className="flex items-center justify-end gap-3 sm:gap-5 flex-shrink-0">
+                    <button onClick={() => setIsPostModalOpen(true)} className="bg-action-blue text-white p-2.5 rounded-full hover:opacity-90 shadow-md shadow-action-blue/20 transition-all">
                         <Plus size={20} />
                     </button>
                     <div className="relative flex-shrink-0">
                         <div onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="flex items-center gap-3 cursor-pointer">
                             <div className="hidden sm:block">
-                                <p className="font-semibold text-text-main text-md">Saleh Ahmed</p>
+                                <p className="font-semibold text-text-main text-sm">Saleh Ahmed</p>
                             </div>
-                            <img src="https://i.pravatar.cc/40?u=saleh" alt="Saleh Ahmed" className="w-10 h-10 rounded-full flex-shrink-0" />
+                            <img src="https://i.pravatar.cc/40?u=saleh" alt="Saleh Ahmed" className="w-10 h-10 rounded-full flex-shrink-0 border border-border-ui" />
                         </div>
                         {isDropdownOpen && (
-                            <div className="absolute right-0 mt-2 w-48 bg-bg-surface rounded-lg shadow-xl z-20 border border-border-ui">
-                                <a href="#" className="flex items-center gap-3 px-4 py-2 text-text-main hover:bg-bg-page"><User size={20} /><span>Profile</span></a>
-                                <a href="#" className="flex items-center gap-3 px-4 py-2 text-text-main hover:bg-bg-page"><Settings size={20} /><span>Settings</span></a>
-                                <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-4 py-2 text-text-main hover:bg-bg-page"><Moon size={20} /><span>Switch to {theme === 'light' ? 'Dark' : 'Light'}</span></button>
-                                <hr className="border-border-ui"/>
-                                <a href="#" onClick={handleLogout} className="flex items-center gap-3 px-4 py-2 text-red-500 hover:bg-bg-page">
-                                    <LogOut size={20} />
+                            <div className="absolute right-0 mt-3 w-48 bg-bg-surface rounded-xl shadow-xl z-20 border border-border-ui py-2 overflow-hidden">
+                                <a href="#" className="flex items-center gap-3 px-4 py-2.5 text-text-main hover:bg-bg-page text-sm font-medium transition-colors"><User size={18} /><span>Profile</span></a>
+                                <a href="#" className="flex items-center gap-3 px-4 py-2.5 text-text-main hover:bg-bg-page text-sm font-medium transition-colors"><Settings size={18} /><span>Settings</span></a>
+                                <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-4 py-2.5 text-text-main hover:bg-bg-page text-sm font-medium transition-colors"><Moon size={18} /><span>Switch to {theme === 'light' ? 'Dark' : 'Light'}</span></button>
+                                <div className="h-px bg-border-ui my-1"></div>
+                                <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-red-500 hover:bg-red-50 hover:text-red-600 text-sm font-medium transition-colors">
+                                    <LogOut size={18} />
                                     <span>Logout</span>
-                                </a>
+                                </button>
                             </div>
                         )}
                     </div>
-                    <button onClick={() => setIsRightSidebarOpen(prev => !prev)} className="lg:hidden text-text-sec hover:text-action-blue flex-shrink-0">
-                        <Users size={24} />
+                    <button onClick={() => setIsRightSidebarOpen(prev => !prev)} className="lg:hidden text-text-sec hover:text-action-blue flex-shrink-0 p-1.5 sm:p-2 bg-bg-page rounded-full border border-border-ui transition-colors">
+                        <Menu size={20} />
                     </button>
                 </div>
             </header>

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, Mail, Lock, Eye, Moon, Sun } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../redux/authActions';
-import { clearError } from '../redux/authSlice';
+import { loginUser } from '../redux/slice/authActions';
+import { clearError } from '../redux/slice/authSlice';
 // import { useTheme } from '../context/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faGoogle, faApple } from '@fortawesome/free-brands-svg-icons';
@@ -18,8 +18,9 @@ const SignIn = () => {
   const [localError, setLocalError] = useState('');
 
   const handleLoginSubmit = async () => {
-    // Credential validation ko comment out kiya gaya hai
-    // if (!email || !password) return setLocalError("Email and Password are required");
+    if (!email || !password) {
+      return setLocalError("Email and Password are required");
+    }
     setLocalError('');
     dispatch(clearError());
     try {

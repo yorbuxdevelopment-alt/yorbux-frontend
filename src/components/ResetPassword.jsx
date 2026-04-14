@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { KeyRound, Lock, ChevronLeft } from 'lucide-react';
+import { Lock, ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { resetPassword } from '../redux/authActions';
+import { resetPassword } from '../redux/slice/authActions'; // Corrected import path
 
 const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
@@ -23,14 +25,25 @@ const ResetPassword = () => {
     setSuccess('');
     setLoading(true);
     
-    const email = localStorage.getItem('resetEmail');
-    const resetToken = localStorage.getItem('resetToken'); // Agar backend token expect karta hai
+    const email = localStorage.getItem('resetEmail') || "";
+    const otp = localStorage.getItem('resetOtp') || "";
 
     try {
-      await dispatch(resetPassword({ email, newPassword, resetToken })).unwrap();
+      // Backend ki requirement ke hisaab se exact payload structure
+      const payload = {
+        email: email,
+        username: "",
+        mobile: "",
+        phone: "",
+        otp: otp,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword
+      };
+
+      await dispatch(resetPassword(payload)).unwrap();
       setSuccess('Password reset successfully!');
       localStorage.removeItem('resetEmail');
-      localStorage.removeItem('resetToken');
+      localStorage.removeItem('resetOtp');
       setTimeout(() => navigate('/signin'), 2000);
     } catch (err) {
       console.error('Reset Password Error:', err);
@@ -55,26 +68,44 @@ const ResetPassword = () => {
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
               <input 
-                type="password" 
+                type={showNewPassword ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="New Password" 
                 required
-                className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
+                className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-12 text-text-main focus:border-action-blue transition-all outline-none"
               />
+              {showNewPassword ? (
+                <Eye 
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec cursor-pointer hover:text-text-main" 
+                  size={20} 
+                  onClick={() => setShowNewPassword(false)} 
+                />
+              ) : (
+                <EyeOff 
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec cursor-pointer hover:text-text-main" 
+                  size={20} 
+                  onClick={() => setShowNewPassword(true)} 
+                />
+              )}
             </div>
 
             {/* Confirm Password Input */}
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
               <input 
-                type="password" 
+                type={showConfirmPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm New Password" 
                 required
-                className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
+                className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-12 text-text-main focus:border-action-blue transition-all outline-none"
               />
+              {showConfirmPassword ? (
+                <Eye className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec cursor-pointer hover:text-text-main" size={20} onClick={() => setShowConfirmPassword(false)} />
+              ) : (
+                <EyeOff className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec cursor-pointer hover:text-text-main" size={20} onClick={() => setShowConfirmPassword(true)} />
+              )}
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             {success && <p className="text-green-500 text-sm">{success}</p>}

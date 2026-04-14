@@ -1,21 +1,32 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../api';
 
-const BASE_URL = 'http://172.27.176.1:3000/api/auth';
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async ({ name, email, phone, password }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/auth/register', { name, email, phone, password });
+      // API response mein token aur user data ho sakta hai
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || error.message || 'Registration failed. Please try again.'
+      );
+    }
+  }
+);
 
-export const loginUser = createAsyncThunk(
+export const loginUser = createAsyncThunk( // Existing loginUser
   'auth/loginUser',
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Login failed. Check your credentials.');
-      return data; // contains user, token, role
+      // api instance automatically uses VITE_API_URL aur application/json format set karta hai
+      const response = await api.post('/auth/login', { email, password });
+      return response.data; // user, token, role yahan return honge
     } catch (error) {
-      return rejectWithValue(error.message || 'Network error. Please try again.');
+      return rejectWithValue(
+        error.response?.data?.message || error.message || 'Login failed. Please try again.'
+      );
     }
   }
 );
@@ -24,16 +35,12 @@ export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
   async ({ email }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/forgot-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to send OTP');
-      return data;
+      const response = await api.post('/auth/forgot-password', { email });
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Network error. Please try again.');
+      return rejectWithValue(
+        error.response?.data?.message || error.message || 'Failed to send OTP'
+      );
     }
   }
 );
@@ -42,16 +49,12 @@ export const verifyOTP = createAsyncThunk(
   'auth/verifyOTP',
   async ({ email, otp }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/verify-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, otp }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Invalid OTP');
-      return data;
+      const response = await api.post('/auth/verify-otp', { email, otp });
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Network error. Please try again.');
+      return rejectWithValue(
+        error.response?.data?.message || error.message || 'Invalid OTP'
+      );
     }
   }
 );
@@ -60,16 +63,12 @@ export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
   async ({ email, newPassword, resetToken }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/reset-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, newPassword, resetToken }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to reset password');
-      return data;
+      const response = await api.post('/auth/reset-password', { email, newPassword, resetToken });
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Network error. Please try again.');
+      return rejectWithValue(
+        error.response?.data?.message || error.message || 'Failed to reset password'
+      );
     }
   }
 );

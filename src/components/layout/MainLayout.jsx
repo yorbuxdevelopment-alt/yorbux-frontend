@@ -38,7 +38,7 @@ function MainLayout({ handleLogout }) {
           <Sidebar handleLogout={handleLogout} isCollapsed={isSidebarCollapsed} toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)} />
         </aside>
 
-        <main className="flex-1 overflow-y-auto no-scrollbar p-4 lg:p-8">
+        <main className="flex-1 overflow-y-auto no-scrollbar p-4 md:p-6">
           <Outlet />
         </main>
 

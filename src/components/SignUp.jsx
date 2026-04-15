@@ -61,14 +61,14 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen bg-[#f3f6f9] flex items-center justify-center p-4 font-sans">
-      <div className="bg-white w-full max-w-[700px] rounded-lg shadow-lg border border-gray-200 p-8 md:p-12">
+      <div className="bg-white w-full max-w-[700px] rounded-lg shadow-lg border border-gray-200 p-6 md:p-10">
         
         {/* Logo & Header */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-6">
           <div className="flex justify-center items-center gap-2 mb-4">
-             <img src="/logo/yor-bux-primary-logo.png" alt="Yorbux" className="h-20 mx-auto" />
+             <img src="/logo/yor-bux-primary-logo.png" alt="Yorbux" className="h-16 mx-auto" />
           </div>
-          <h1 className="text-[#1a1a1a] text-2xl font-bold mb-1">Join YorBux</h1>
+          <h1 className="text-[#1a1a1a] text-xl md:text-2xl font-bold mb-1">Join YorBux</h1>
           <p className="text-gray-500 text-sm">Make the most of your professional life</p>
         </div>
 
@@ -76,7 +76,7 @@ const SignUp = () => {
           {step === 1 && (
             <>
               {/* Step 1 Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 mb-6">
                 {/* Prefix */}
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-[13px] font-bold text-gray-700 mb-1">Prefix <span className="text-red-500">*</span></label>
@@ -146,7 +146,7 @@ const SignUp = () => {
           {step === 2 && (
             <>
               {/* Step 2 Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 mb-6">
                 {/* Password */}
                 <div className="col-span-1">
                   <label className="block text-[13px] font-bold text-gray-700 mb-1">Password (6 or more) <span className="text-red-500">*</span></label>

@@ -56,11 +56,11 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen bg-bg-page flex flex-col items-center justify-center font-sans px-4">
       <div className="w-full flex justify-center">
-        <div className="bg-bg-surface w-full max-w-[480px] rounded-[32px] p-10 md:p-14 shadow-sm border border-border-ui/50">
-          <div className="text-center mb-8">
-            <img src='/logo/yor-bux-primary-logo.png' alt="Yorbux" className="h-20 mx-auto mb-4" />
-            <h1 className="text-text-main text-[32px] font-bold mb-2 tracking-tight">Reset password</h1>
-            <p className="text-text-sec text-[15px] font-medium">Set a new password for your account</p>
+        <div className="bg-bg-surface w-full max-w-[480px] rounded-[32px] p-8 md:p-12 shadow-sm border border-border-ui/50">
+          <div className="text-center mb-6">
+            <img src='/logo/yor-bux-primary-logo.png' alt="Yorbux" className="h-16 mx-auto mb-4" />
+            <h1 className="text-text-main text-2xl md:text-[32px] font-bold mb-2 tracking-tight">Reset password</h1>
+            <p className="text-text-sec text-sm md:text-[15px] font-medium">Set a new password for your account</p>
           </div>
 
           <form onSubmit={handlePasswordReset} className="space-y-5">
@@ -73,7 +73,7 @@ const ResetPassword = () => {
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="New Password" 
                 required
-                className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-12 text-text-main focus:border-action-blue transition-all outline-none"
+                className="w-full bg-bg-surface border border-border-ui rounded-2xl py-3 pl-12 pr-12 text-text-main focus:border-action-blue transition-all outline-none"
               />
               {showNewPassword ? (
                 <Eye 
@@ -99,7 +99,7 @@ const ResetPassword = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm New Password" 
                 required
-                className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-12 text-text-main focus:border-action-blue transition-all outline-none"
+                className="w-full bg-bg-surface border border-border-ui rounded-2xl py-3 pl-12 pr-12 text-text-main focus:border-action-blue transition-all outline-none"
               />
               {showConfirmPassword ? (
                 <Eye className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec cursor-pointer hover:text-text-main" size={20} onClick={() => setShowConfirmPassword(false)} />
@@ -110,7 +110,7 @@ const ResetPassword = () => {
             {error && <p className="text-red-500 text-sm">{error}</p>}
             {success && <p className="text-green-500 text-sm">{success}</p>}
 
-            <button type="submit" disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all mt-2 disabled:opacity-70">
+            <button type="submit" disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-3 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all mt-2 disabled:opacity-70">
               {loading ? 'Resetting...' : 'Reset Password'}
             </button>
 

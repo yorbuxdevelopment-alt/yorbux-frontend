@@ -57,13 +57,13 @@ const ForgotPassword = () => {
   return (
     <div className="min-h-screen bg-bg-page flex flex-col items-center justify-center font-sans px-4">
       <div className="w-full flex justify-center">
-        <div className="bg-bg-surface w-full max-w-[480px] rounded-[32px] p-10 md:p-14 shadow-sm border border-border-ui/50">
-          <div className="text-center mb-8">
-            <img src='/logo/yor-bux-primary-logo.png' alt="Yorbux" className="h-20 mx-auto mb-4" />
-            <h1 className="text-text-main text-[32px] font-bold mb-2 tracking-tight">
+        <div className="bg-bg-surface w-full max-w-[480px] rounded-[32px] p-8 md:p-12 shadow-sm border border-border-ui/50">
+          <div className="text-center mb-6">
+            <img src='/logo/yor-bux-primary-logo.png' alt="Yorbux" className="h-16 mx-auto mb-4" />
+            <h1 className="text-text-main text-2xl md:text-[32px] font-bold mb-2 tracking-tight">
               {step === 1 ? 'Forgot password?' : 'Verify OTP'}
             </h1>
-            <p className="text-text-sec text-[15px] font-medium">
+            <p className="text-text-sec text-sm md:text-[15px] font-medium">
               {step === 1 ? 'Enter your details to receive a reset link' : `We sent a verification code to ${email}`}
             </p>
           </div>
@@ -78,7 +78,7 @@ const ForgotPassword = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ahmed@gmail.com" 
                   required
-                  className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
+                  className="w-full bg-bg-surface border border-border-ui rounded-2xl py-3 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
                 />
               </div>
             ) : (
@@ -90,14 +90,14 @@ const ForgotPassword = () => {
                   onChange={(e) => setOtp(e.target.value)}
                   placeholder="Enter 6-digit OTP" 
                   required
-                  className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
+                  className="w-full bg-bg-surface border border-border-ui rounded-2xl py-3 pl-12 pr-4 text-text-main focus:border-action-blue transition-all outline-none"
                 />
               </div>
             )}
             {error && <p className="text-red-500 text-sm">{error}</p>}
             {success && <p className="text-green-500 text-sm">{success}</p>}
 
-            <button type="submit" disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all disabled:opacity-70">
+            <button type="submit" disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-3 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all disabled:opacity-70">
               {step === 1 ? (loading ? 'Sending...' : 'Send OTP') : (loading ? 'Verifying...' : 'Verify OTP')}
             </button>
 

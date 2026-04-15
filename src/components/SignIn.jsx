@@ -48,14 +48,14 @@ const SignIn = () => {
         </div>
       </div> */}
 
-      <div className="flex-1 flex flex-col items-center justify-center w-full px-4 mt-[-50px]">
+      <div className="flex-1 flex flex-col items-center justify-center w-full px-4">
 
-        <div className="bg-bg-surface w-full max-w-[520px] rounded-[32px] p-12 shadow-sm border border-border-ui/50">
+        <div className="bg-bg-surface w-full max-w-[520px] rounded-[32px] p-8 md:p-12 shadow-sm border border-border-ui/50">
           
-          <div className="text-center mb-10">
-            <img src= '/logo/yor-bux-primary-logo.png' alt="Yorbux" className="h-20 mx-auto mb-4" />
-            <h3 className="text-text-main text-[32px] font-bold mb-2">Welcome</h3>
-            <p className="text-text-sec text-[16px]">Stay ahead in your career. Sign in to discover new opportunities and keep up with the latest in your professional world</p>
+          <div className="text-center mb-8">
+            <img src= '/logo/yor-bux-primary-logo.png' alt="Yorbux" className="h-16 mx-auto mb-4" />
+            <h3 className="text-text-main text-2xl md:text-[32px] font-bold mb-2">Welcome</h3>
+            <p className="text-text-sec text-sm md:text-[16px]">Stay ahead in your career. Sign in to discover new opportunities and keep up with the latest in your professional world</p>
           </div>
 
           {/* <div className="flex gap-4 mb-8">
@@ -78,12 +78,12 @@ const SignIn = () => {
           <div className="space-y-5">
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={20} />
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="ahmed@gmail.com" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-4 text-text-main focus:ring-2 focus:ring-action-blue/20 focus:border-action-blue transition-all outline-none"/>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="ahmed@gmail.com" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-3 pl-12 pr-4 text-text-main focus:ring-2 focus:ring-action-blue/20 focus:border-action-blue transition-all outline-none"/>
             </div>
 
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={20} />
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="hwahmed07" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-4 pl-12 pr-12 text-text-main focus:ring-2 focus:ring-action-blue/20 focus:border-action-blue transition-all outline-none"/>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="hwahmed07" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-3 pl-12 pr-12 text-text-main focus:ring-2 focus:ring-action-blue/20 focus:border-action-blue transition-all outline-none"/>
               <Eye className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec cursor-pointer" size={20} />
             </div>
 
@@ -100,7 +100,7 @@ const SignIn = () => {
             {localError && <p className="text-red-500 text-sm px-1">{localError}</p>}
             {error && <p className="text-red-500 text-sm px-1">{error}</p>}
 
-            <button onClick={handleLoginSubmit} disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-4 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all mt-4 disabled:opacity-70">
+            <button onClick={handleLoginSubmit} disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-3 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all mt-4 disabled:opacity-70">
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </div>

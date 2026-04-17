@@ -158,20 +158,21 @@ const SignIn = () => {
     setLocalError('');
     setSocialLoading('facebook');
 
-    window.FB.login(async (loginResponse) => {
+    window.FB.login((loginResponse) => {
       if (!loginResponse?.authResponse?.accessToken) {
         handleSocialError('Facebook login cancel ho gaya');
         return;
       }
 
-      try {
-        const { data } = await api.post('/auth/facebook', {
-          accessToken: loginResponse.authResponse.accessToken
+      api.post('/auth/facebook', {
+        accessToken: loginResponse.authResponse.accessToken
+      })
+        .then(({ data }) => {
+          handleAuthSuccess(data);
+        })
+        .catch((requestError) => {
+          handleSocialError(requestError.response?.data?.message || 'Facebook login failed');
         });
-        handleAuthSuccess(data);
-      } catch (requestError) {
-        handleSocialError(requestError.response?.data?.message || 'Facebook login failed');
-      }
     }, { scope: 'email,public_profile' });
   };
 
@@ -254,3 +255,4 @@ const SignIn = () => {
 };
 
 export default SignIn;
+

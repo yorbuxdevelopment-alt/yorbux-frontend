@@ -55,20 +55,20 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-page flex flex-col items-center justify-center font-sans px-4">
-      <div className="w-full flex justify-center">
-        <div className="bg-bg-surface w-full max-w-[480px] rounded-[32px] p-8 md:p-12 shadow-sm border border-border-ui/50">
-          <div className="text-center mb-6">
-            <img src='/logo/yor-bux-primary-logo.png' alt="Yorbux" className="h-16 mx-auto mb-4" />
-            <h1 className="text-text-main text-2xl md:text-[32px] font-bold mb-2 tracking-tight">
+    <div className="min-h-screen bg-bg-page flex flex-col items-center font-sans">
+      <div className="flex-1 flex flex-col items-center justify-center w-full px-4 py-6 md:py-8">
+        <div className="bg-bg-surface w-full max-w-[480px] rounded-[24px] md:rounded-[32px] p-6 sm:p-8 md:p-10 shadow-sm border border-border-ui/50">
+          <div className="text-center mb-5 md:mb-6">
+            <img src='/logo/yor-bux-primary-logo.png' alt="Yorbux" className="h-12 md:h-14 mx-auto mb-3 md:mb-4" />
+            <h1 className="text-text-main text-2xl md:text-[32px] font-bold mb-1 md:mb-2 tracking-tight">
               {step === 1 ? 'Forgot password?' : 'Verify OTP'}
             </h1>
-            <p className="text-text-sec text-sm md:text-[15px] font-medium">
+            <p className="text-text-sec text-[13px] md:text-[15px] font-medium px-2 md:px-0">
               {step === 1 ? 'Enter your details to receive a reset link' : `We sent a verification code to ${email}`}
             </p>
           </div>
 
-          <form onSubmit={step === 1 ? handleSend : handleVerifyOTP} className="space-y-6">
+          <form onSubmit={step === 1 ? handleSend : handleVerifyOTP} className="space-y-4 md:space-y-6">
             {step === 1 ? (
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
@@ -94,14 +94,14 @@ const ForgotPassword = () => {
                 />
               </div>
             )}
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-            {success && <p className="text-green-500 text-sm">{success}</p>}
+            {error && <p className="text-red-500 text-sm px-1">{error}</p>}
+            {success && <p className="text-green-500 text-sm px-1">{success}</p>}
 
-            <button type="submit" disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-3 rounded-2xl font-bold text-[16px] shadow-lg shadow-action-blue/20 transition-all disabled:opacity-70">
+            <button type="submit" disabled={loading} className="w-full bg-action-blue hover:opacity-90 text-white py-2.5 md:py-3 rounded-2xl font-bold text-[15px] md:text-[16px] shadow-lg shadow-action-blue/20 transition-all disabled:opacity-70">
               {step === 1 ? (loading ? 'Sending...' : 'Send OTP') : (loading ? 'Verifying...' : 'Verify OTP')}
             </button>
 
-            <div className="text-center">
+            <div className="text-center pt-2">
               {step === 2 ? (
                 <button type="button" onClick={() => { setStep(1); setError(''); setSuccess(''); }} className="flex items-center justify-center gap-2 text-action-blue text-[14px] font-bold hover:underline mx-auto">
                   <ChevronLeft size={16} strokeWidth={3} />

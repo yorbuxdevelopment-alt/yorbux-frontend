@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Search, Plus, User, Settings, LogOut, Moon, Menu, Users } from 'lucide-react';
+import { Search, Plus, User, Settings, LogOut, Moon, Menu, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import CreatePostModal from '../feed/CreatePostModal';
 
-const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout }) => { // Accept handleLogout
+const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout, isSidebarCollapsed, toggleCollapse }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
     const { theme, toggleTheme } = useTheme();
@@ -12,16 +12,23 @@ const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout }) =
 
     return (
         <>
-            <header className="bg-bg-surface rounded-xl p-4 flex items-center justify-between gap-4">
+            <header className="bg-bg-surface border-b border-border-ui p-4 flex items-center justify-between gap-4">
                 {/* Left Side: Mobile Menu, Logo & Search */}
                 <div className="flex items-center gap-4 sm:gap-6 flex-1">
                     <button onClick={() => setIsLeftSidebarOpen(prev => !prev)} className="md:hidden text-text-sec hover:text-action-blue flex-shrink-0">
                         <Users size={24} />
                     </button>
-                    <img src={logoSrc} alt="Yorbux" className="h-8 flex-shrink-0 hidden sm:block" />
                     
+                    {/* Logo & Collapsible Arrow */}
+                    <div className="hidden sm:flex items-center gap-4 flex-shrink-0">
+                        <img src={logoSrc} alt="Yorbux" className="h-8" />
+                        <button onClick={toggleCollapse} className="hidden md:flex items-center justify-center bg-bg-page border border-border-ui rounded-full p-1.5 text-text-sec hover:text-action-blue hover:shadow-sm transition-all">
+                            {isSidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+                        </button>
+                    </div>
+
                     {/* Search Bar - Next to Logo */}
-                    <div className="relative hidden lg:block w-full max-w-sm ml-2">
+                    <div className="relative hidden lg:block w-full max-w-sm ml-8 lg:ml-16">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={18} />
                         <input type="text" placeholder="Search..." className="w-full bg-bg-page text-text-main py-2.5 pl-11 pr-4 rounded-xl outline-none text-sm border border-border-ui focus:ring-1 focus:ring-action-blue transition-all" />
                     </div>

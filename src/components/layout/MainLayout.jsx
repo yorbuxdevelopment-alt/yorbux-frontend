@@ -25,6 +25,8 @@ function MainLayout({ handleLogout }) {
           setIsLeftSidebarOpen={setIsLeftSidebarOpen} 
           setIsRightSidebarOpen={setIsRightSidebarOpen} 
           handleLogout={handleLogout} // Pass it to Navbar
+          isSidebarCollapsed={isSidebarCollapsed}
+          toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
       </div>
 
@@ -32,10 +34,10 @@ function MainLayout({ handleLogout }) {
         {/* LEFT SIDEBAR - Holds Navigation */}
         <aside 
           className={`hidden md:block flex-shrink-0 bg-bg-surface border-r border-border-ui overflow-y-auto no-scrollbar transition-all duration-300 ease-in-out ${
-            isSidebarCollapsed ? 'w-[88px]' : 'w-[240px]'
+            isSidebarCollapsed ? 'w-[88px] p-2' : 'w-[240px]'
           }`}
         >
-          <Sidebar handleLogout={handleLogout} isCollapsed={isSidebarCollapsed} toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)} />
+          <Sidebar handleLogout={handleLogout} isCollapsed={isSidebarCollapsed} />
         </aside>
 
         <main className="flex-1 overflow-y-auto no-scrollbar p-4 md:p-6">

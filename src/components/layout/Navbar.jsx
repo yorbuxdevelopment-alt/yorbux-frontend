@@ -12,7 +12,7 @@ const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout, isS
 
     return (
         <>
-            <header className="bg-bg-surface border-b border-border-ui p-4 flex items-center justify-between gap-4">
+            <header className="bg-bg-surface p-4 flex items-center justify-between gap-4">
                 {/* Left Side: Mobile Menu, Logo & Search */}
                 <div className="flex items-center gap-4 sm:gap-6 flex-1">
                     <button onClick={() => setIsLeftSidebarOpen(prev => !prev)} className="md:hidden text-text-sec hover:text-action-blue flex-shrink-0">

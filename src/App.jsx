@@ -17,6 +17,8 @@ import { logout } from './redux/authSlice';
 import Products from './redux/Products';
 import Jobs from './pages/Jobs';
 import PostJob from './pages/PostJob';
+import EditProfile from './pages/EditProfile';
+import ViewProfile from './pages/ViewProfile';
 
 function App() {
   // Redux se isAuthenticated aur role fetch kar rahe hain
@@ -51,6 +53,8 @@ function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="dashboard/products" element={<Products />} />
+          <Route path="edit-profile" element={<EditProfile/>} />
+          <Route path="view-profile" element={<ViewProfile/>} />
         </Route>
       ) : (
         <Route path="*" element={<Navigate to="/signin" />} />

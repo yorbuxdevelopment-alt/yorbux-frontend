@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../redux/slice/authActions';
 import { clearError } from '../redux/slice/authSlice';
@@ -277,4 +277,3 @@ const SignIn = () => {
 };
 
 export default SignIn;
-

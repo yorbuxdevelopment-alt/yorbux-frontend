@@ -1,129 +1,267 @@
 import React, { useState } from 'react';
-import { Camera, Eye, Globe, User, Cake, MapPin, Facebook, Twitter, Instagram, Video, Image as ImageIcon, Smile, MoreHorizontal } from 'lucide-react';
-import EditCoverPhotoModal from '../components/profile/EditCoverPhotoModal';
-import EditProfilePhotoModal from '../components/profile/EditProfilePhotoModal';
-import RightBar from '../components/layout/RightBar';
+import { MapPin, Building2, ChevronDown, Image as ImageIcon, Briefcase, UserCheck, CheckCircle, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
-  const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  
-  const coverImage = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80";
-  const profileImage = "https://i.pravatar.cc/160?u=saleh";
+  const [activeTab, setActiveTab] = useState('Connections');
+  const navigate = useNavigate();
+
+  // Dummy Feed Data
+  const connectionsPosts = [
+    {
+      id: 1,
+      author: "Mr. Mayank Kukreja",
+      avatar: "https://i.pravatar.cc/150?u=mayank",
+      time: "2 hours ago",
+      content: "Join the Mega Walk-in Drive at Axis Bank! Great opportunities await. Bring your resume and join us for the interview.",
+      image: "https://images.unsplash.com/photo-1560439514-4e9645039924?auto=format&fit=crop&w=1200&q=80",
+    }
+  ];
+
+  const publicPosts = [
+    ...connectionsPosts,
+    {
+      id: 2,
+      author: "Sarah Jenkins",
+      avatar: "https://i.pravatar.cc/150?u=sarah",
+      time: "5 hours ago",
+      content: "Just finished a great workshop on React and Tailwind CSS! The future of frontend development is looking bright.",
+      image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=1200&q=80",
+    },
+    {
+      id: 3,
+      author: "Tech Innovations Ltd.",
+      avatar: "https://i.pravatar.cc/150?u=tech",
+      time: "1 day ago",
+      content: "We are thrilled to announce our new AI-powered analytics platform. Read more on our blog!",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+    },
+    {
+      id: 4,
+      author: "Rahul Verma",
+      avatar: "https://i.pravatar.cc/150?u=rahul",
+      time: "2 days ago",
+      content: "Beautiful sunset from the office today. Sometimes you just need to pause and appreciate the view.",
+      image: "https://images.unsplash.com/photo-1494548162494-384bba4ab999?auto=format&fit=crop&w=1200&q=80",
+    }
+  ];
+
+  const displayPosts = activeTab === 'Connections' ? connectionsPosts : publicPosts;
 
   return (
-    <>
-      <div className="space-y-6">
-        {/* --- HEADER SECTION --- */}
-        <div className="bg-bg-surface rounded-[24px] overflow-hidden shadow-sm border border-border-ui">
-          <div className="h-[300px] relative group">
-            <img src={coverImage} className="w-full h-full object-cover" alt="cover" />
-            <button onClick={() => setIsCoverModalOpen(true)} className="absolute bottom-6 right-6 bg-white/90 backdrop-blur-sm text-text-sec px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 shadow-sm border border-border-ui hover:bg-white transition-all">
-              <Camera size={18} /> Edit Cover Photo
-            </button>
-          </div>
-          <div className="px-10 pb-8 relative flex flex-col md:flex-row items-end justify-between">
-            <div className="flex items-end gap-6 -mt-16">
-              <div className="relative group">
-                <div className="w-[150px] h-[150px] rounded-full border-[6px] border-bg-surface overflow-hidden shadow-md bg-bg-surface">
-                  <img src={profileImage} alt="profile" className="w-full h-full object-cover" />
+    <div className="min-h-[calc(100vh-80px)] bg-gradient-to-br from-slate-50 via-blue-50/30 to-teal-50/20 -m-4 sm:-m-6 p-4 md:p-6 lg:p-8 overflow-hidden relative rounded-xl">
+      {/* --- GEOMETRIC PATTERN OVERLAY --- */}
+      <div 
+        className="absolute inset-0 opacity-[0.25] pointer-events-none" 
+        style={{ backgroundImage: 'radial-gradient(#94a3b8 1px, transparent 1px)', backgroundSize: '32px 32px' }}
+      ></div>
+
+      {/* --- FULL WIDTH CONTAINER --- */}
+      <div className="w-full max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 relative z-10">
+        
+        {/* --- LEFT SIDEBAR (3 COLS) --- */}
+        <div className="col-span-1 lg:col-span-3 space-y-6">
+          {/* Profile Card */}
+          <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 overflow-hidden">
+            <div className="h-24 bg-gradient-to-r from-blue-600 to-indigo-500 relative overflow-hidden">
+               <div className="absolute inset-0 bg-black/10"></div>
+            </div>
+            <div className="px-5 pb-6 relative">
+              <div className="w-24 h-24 rounded-full border-4 border-white bg-gray-200 mx-auto -mt-12 overflow-hidden shadow-md relative z-10">
+                <img src="https://i.pravatar.cc/150?u=parmanand" alt="Profile" className="w-full h-full object-cover" />
+              </div>
+              <div className="text-center mt-4 mb-6">
+                <h2 className="text-gray-900 font-extrabold text-[17px] leading-tight">Mr. Parmanand Parihar</h2>
+                <div className="flex items-center justify-center gap-1.5 text-gray-500 text-[13px] mt-1.5 font-medium">
+                  <MapPin size={14} className="text-blue-500" />
+                  <span>Indore, Madhya Pradesh</span>
                 </div>
-                <button onClick={() => setIsProfileModalOpen(true)} className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md border border-border-ui text-text-sec">
-                  <Camera size={16} />
+              </div>
+              <div className="flex justify-around text-center border-t border-gray-100 py-4 mb-2">
+                <div>
+                  <p className="text-[18px] font-black text-blue-600">3</p>
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Connections</p>
+                </div>
+                <div className="w-px bg-gray-100 h-10"></div>
+                <div>
+                  <p className="text-[18px] font-black text-blue-600">0</p>
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Approval</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <button onClick={() => navigate('/view-profile')} className="w-full py-2.5 text-blue-600 border-2 border-blue-100 bg-blue-50/50 rounded-xl text-sm font-bold hover:bg-blue-50 hover:border-blue-200 active:scale-95 transition-all">
+                  View profile
+                </button>
+              <button onClick={() => navigate('/edit-profile')} className="w-full py-2.5 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl text-sm font-bold hover:from-blue-700 hover:to-blue-600 active:scale-95 transition-all shadow-md shadow-blue-600/25">
+                  Edit profile
                 </button>
               </div>
-              <div className="mb-2">
-                <h2 className="text-text-main text-[28px] font-bold tracking-tight leading-tight">Saleh Ahmed</h2>
-                <p className="text-text-sec text-[15px] font-medium">UI Designer</p>
+            </div>
+          </div>
+
+          {/* Waiting For Approval Card */}
+          <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 p-4.5 flex items-center justify-between group cursor-pointer">
+            <div className="flex items-center gap-3 text-gray-800 font-bold text-[14px]">
+              <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
+                <UserCheck size={18} className="text-blue-600" />
+              </div>
+              Waiting For Approval
+            </div>
+            <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[12px] font-black shadow-sm">0</span>
+          </div>
+
+          {/* Profiling Card */}
+          <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 p-5">
+            <div className="flex items-center gap-3 text-gray-800 font-bold text-[14px] mb-4">
+              <div className="p-2 bg-blue-50 rounded-lg">
+                <CheckCircle size={18} className="text-blue-500" />
+              </div>
+              Profiling
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-2 mb-2 overflow-hidden shadow-inner">
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-400 h-2 rounded-full relative" style={{ width: '5%' }}></div>
+            </div>
+            <div className="text-right text-[12px] text-gray-500 font-bold">5% Completed</div>
+          </div>
+        </div>
+
+        {/* --- MAIN FEED (6 COLS) --- */}
+        <div className="col-span-1 lg:col-span-6 space-y-6">
+          {/* Create Post Section */}
+          <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 p-6">
+            <div className="flex items-start gap-4 mb-3">
+              <img src="https://i.pravatar.cc/150?u=parmanand" alt="Profile" className="w-11 h-11 rounded-full object-cover border-2 border-gray-50 shadow-sm" />
+              <div className="flex-1">
+                <h3 className="text-gray-800 font-extrabold text-[15px] mb-2">What's on your mind today?</h3>
+                <textarea 
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl p-4 text-[14px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none transition-all shadow-inner placeholder-gray-400"
+                  rows="3"
+                  placeholder="Write something awesome..."
+                ></textarea>
               </div>
             </div>
-            <div className="flex items-center gap-3 mb-2">
-              <button className="p-3 bg-bg-page text-text-sec rounded-xl hover:bg-border-ui/50 transition-all">
-                <Eye size={20} />
+            
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-2 gap-4 pl-15">
+              <button className="flex items-center gap-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-bold transition-all w-fit">
+                <ImageIcon size={18} />
+                Choose file
               </button>
-              <button className="bg-bg-page text-text-main px-6 py-3 rounded-xl font-bold text-sm border border-border-ui hover:bg-border-ui/50 transition-all">
-                Edit basic info
+              <div className="flex items-center gap-3 ml-auto">
+                <div className="relative">
+                  <select className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 text-[13px] font-bold rounded-xl pl-4 pr-9 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-gray-100 transition-colors">
+                    <option>Public</option>
+                    <option>Connections</option>
+                    <option>Only me</option>
+                  </select>
+                  <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                </div>
+                <button className="bg-blue-600 text-white px-8 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 active:scale-95 transition-all shadow-md shadow-blue-600/20">
+                  Post
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Combined Filters & Post Feed Section */}
+          <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 overflow-hidden flex flex-col">
+            
+            {/* Sticky Tabs Header */}
+            <div className="flex items-center gap-4 px-6 pt-5 pb-4 border-b border-gray-100 bg-white sticky top-0 z-20">
+              <button 
+                onClick={() => setActiveTab('Connections')} 
+                className={`px-6 py-2.5 rounded-full text-[13px] font-bold whitespace-nowrap active:scale-95 transition-all ${activeTab === 'Connections' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:text-gray-900 shadow-sm'}`}
+              >
+                My Connections
               </button>
+              <button 
+                onClick={() => setActiveTab('Public')} 
+                className={`px-6 py-2.5 rounded-full text-[13px] font-bold whitespace-nowrap active:scale-95 transition-all ${activeTab === 'Public' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:text-gray-900 shadow-sm'}`}
+              >
+                Public
+              </button>
+            </div>
+
+            {/* Scrollable Feed Container */}
+            <div className="p-6 space-y-6 overflow-y-auto max-h-[600px] no-scrollbar">
+              {displayPosts.map((post) => (
+                <div key={post.id} className="pb-6 border-b border-gray-100 last:border-0 last:pb-0">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3.5 group cursor-pointer">
+                      <div className="relative">
+                        <img src={post.avatar} className="w-12 h-12 rounded-full object-cover ring-2 ring-transparent group-hover:ring-blue-200 transition-all" alt="User" />
+                        <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
+                      </div>
+                      <div>
+                        <h4 className="text-[15px] font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">{post.author}</h4>
+                        <div className="flex items-center gap-1.5 text-[12px] text-gray-500 font-medium mt-0.5">
+                          <Clock size={13} />
+                          <span>{post.time}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-[15px] text-gray-700 mb-5 leading-relaxed">{post.content}</p>
+                  <div className="rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center min-h-[300px] shadow-sm">
+                    <img src={post.image} alt="Post Attachment" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* --- CONTENT GRID --- */}
-        <div className="grid grid-cols-12 gap-6">
-          <aside className="col-span-12 lg:col-span-4 space-y-6">
-            <div className="bg-bg-surface p-6 rounded-[24px] shadow-sm border border-border-ui">
-              <h3 className="text-text-main font-bold text-[14px] uppercase tracking-widest mb-6">Intro</h3>
-              <ul className="space-y-4">
-                {[
-                  { icon: <Globe size={18} />, text: 'uihut.com' },
-                  { icon: <User size={18} />, text: 'Male' },
-                  { icon: <Cake size={18} />, text: 'Born June 18, 2001' },
-                  { icon: <MapPin size={18} />, text: 'Sylhet, Bangladesh' },
-                  { icon: <Facebook size={18} />, text: 'Facebook salehahmed' },
-                  { icon: <Twitter size={18} />, text: 'Twitter salehahmed' },
-                  { icon: <Instagram size={18} />, text: 'Instagram Saleh_ahmed' },
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-[14px] text-text-main font-medium">
-                    <span className="text-text-sec">{item.icon}</span>
-                    {item.text}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8 pt-6 border-t border-border-ui space-y-3">
-                <p className="text-[14px] font-bold text-text-main">52,844 <span className="text-text-sec font-normal">Followers</span></p>
-                <p className="text-[14px] font-bold text-text-main">2,564 <span className="text-text-sec font-normal">Following</span></p>
+        {/* --- RIGHT SIDEBAR (3 COLS) --- */}
+        <div className="col-span-1 lg:col-span-3 space-y-6">
+          {/* Recent Open Jobs Card */}
+          <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 p-6">
+            <div className="flex items-center gap-3 border-b border-gray-100 pb-4 mb-5">
+              <div className="p-2 bg-blue-50 rounded-lg">
+                <Briefcase size={18} className="text-blue-600" />
               </div>
-              <button className="w-full mt-6 py-3 bg-bg-page text-text-main rounded-xl font-bold text-sm hover:bg-border-ui/50 transition-all">
-                Edit Details
-              </button>
+              <h3 className="text-gray-900 font-extrabold text-[15px]">Recent Open Jobs</h3>
             </div>
-          </aside>
-          <main className="col-span-12 lg:col-span-8">
-            <div className="grid grid-cols-12 gap-6">
-                <div className="col-span-12 xl:col-span-8 space-y-6">
-                    <div className="bg-bg-surface p-6 rounded-[24px] shadow-sm border border-border-ui">
-                      <div className="flex gap-4 items-center">
-                        <img src="https://i.pravatar.cc/100?u=saleh" className="w-11 h-11 rounded-xl" alt="" />
-                        <input type="text" placeholder="What's happening?" className="flex-1 bg-bg-page border-none rounded-xl py-3 px-5 text-sm focus:ring-1 focus:ring-action-blue" />
-                      </div>
-                      <div className="flex justify-between items-center mt-6">
-                        <div className="flex gap-6">
-                          <button className="flex items-center gap-2 text-text-sec text-sm font-bold hover:text-text-main"><Video size={18} /> Live Video</button>
-                          <button className="flex items-center gap-2 text-text-sec text-sm font-bold hover:text-text-main"><ImageIcon size={18} /> Photo/Video</button>
-                          <button className="flex items-center gap-2 text-text-sec text-sm font-bold hover:text-text-main"><Smile size={18} /> Feeling</button>
-                        </div>
-                        <button className="bg-action-blue text-white px-10 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-action-blue/20">Post</button>
-                      </div>
-                    </div>
-                    <div className="bg-bg-surface p-6 rounded-[24px] shadow-sm border border-border-ui">
-                       <div className="flex items-center justify-between mb-5">
-                         <div className="flex items-center gap-3">
-                           <img src="https://i.pravatar.cc/100?u=saleh" className="w-11 h-11 rounded-xl" alt="" />
-                           <div>
-                             <h4 className="text-[14px] font-bold text-text-main">Saleh ahmed</h4>
-                             <p className="text-[11px] text-text-sec font-medium">Just Now . Friend</p>
-                           </div>
-                         </div>
-                         <button className="text-text-sec hover:text-text-main"><MoreHorizontal size={20} /></button>
-                       </div>
-                       <p className="text-[14px] text-text-main leading-relaxed mb-4">
-                         After 7 1/2 years at Samsung Australia, I am fortunate to have been a part of an amazing company and have done some amazing things.
-                       </p>
-                       <div className="bg-bg-page h-[300px] rounded-[20px] overflow-hidden">
-                          <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" className="w-full h-full object-cover opacity-90" alt="" />
-                       </div>
-                    </div>
+            
+            <div className="space-y-4">
+              {/* Job Item 1 */}
+              <div className="group cursor-pointer border border-gray-50 hover:border-blue-100 bg-gray-50/50 hover:bg-blue-50/30 p-3.5 rounded-xl transition-all duration-300">
+                <div className="flex justify-between items-start mb-1.5">
+                  <h4 className="text-[14px] font-bold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-1">Frontend Developer</h4>
+                  <span className="bg-white text-blue-600 text-[10px] font-extrabold px-2 py-0.5 rounded shadow-sm border border-blue-50">New</span>
                 </div>
-                <aside className="col-span-12 xl:col-span-4 space-y-6">
-                    <RightBar />
-                </aside>
+                <div className="flex items-center gap-2 text-[12px] text-gray-500 mt-2 font-medium">
+                  <Building2 size={14} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
+                  <span>Tech Solutions Inc.</span>
+                </div>
+                <div className="flex items-center gap-2 text-[12px] text-gray-500 mt-1.5 font-medium">
+                  <MapPin size={14} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
+                  <span>Remote / Hybrid</span>
+                </div>
+              </div>
+              
+              {/* Job Item 2 */}
+              <div className="group cursor-pointer border border-gray-50 hover:border-blue-100 bg-gray-50/50 hover:bg-blue-50/30 p-3.5 rounded-xl transition-all duration-300">
+                <div className="flex justify-between items-start mb-1.5">
+                  <h4 className="text-[14px] font-bold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-1">UX/UI Designer</h4>
+                </div>
+                <div className="flex items-center gap-2 text-[12px] text-gray-500 mt-2 font-medium">
+                  <Building2 size={14} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
+                  <span>Creative Studio</span>
+                </div>
+                <div className="flex items-center gap-2 text-[12px] text-gray-500 mt-1.5 font-medium">
+                  <MapPin size={14} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
+                  <span>Mumbai, India</span>
+                </div>
+              </div>
             </div>
-          </main>
+            
+            <button className="w-full mt-5 py-2.5 text-blue-600 bg-blue-50/50 border-2 border-blue-100 rounded-xl text-sm font-bold hover:bg-blue-100 hover:border-blue-200 active:scale-95 transition-all">
+              View all jobs
+            </button>
+          </div>
         </div>
+
       </div>
-      <EditCoverPhotoModal isOpen={isCoverModalOpen} onClose={() => setIsCoverModalOpen(false)} coverImage={coverImage} />
-      <EditProfilePhotoModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} profileImage={profileImage} />
-    </>
+    </div>
   );
 };
 

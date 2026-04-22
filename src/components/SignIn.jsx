@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../redux/slice/authActions';
 import { clearError } from '../redux/slice/authSlice';
@@ -42,6 +42,7 @@ const SignIn = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState('');
   const [socialLoading, setSocialLoading] = useState('');
 
@@ -242,8 +243,15 @@ const SignIn = () => {
 
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sec" size={20} />
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="hwahmed07" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-3 pl-12 pr-12 text-text-main focus:ring-2 focus:ring-action-blue/20 focus:border-action-blue transition-all outline-none"/>
-              <Eye className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec cursor-pointer" size={20} />
+              <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="hwahmed07" className="w-full bg-bg-surface border border-border-ui rounded-2xl py-3 pl-12 pr-12 text-text-main focus:ring-2 focus:ring-action-blue/20 focus:border-action-blue transition-all outline-none"/>
+              <button
+                type="button"
+                onClick={() => setShowPassword((current) => !current)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-text-sec hover:text-text-main transition-colors"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
 
             <div className="flex justify-between items-center px-1">
@@ -277,4 +285,6 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
+
 

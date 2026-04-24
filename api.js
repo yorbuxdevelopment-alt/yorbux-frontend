@@ -13,6 +13,9 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token'); // Assuming JWT token is stored in localStorage
   if (token) { config.headers.Authorization = `Bearer ${token}`; }
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
   return config;
 }, (error) => {
   return Promise.reject(error);

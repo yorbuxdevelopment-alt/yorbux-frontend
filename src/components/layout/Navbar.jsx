@@ -1,14 +1,65 @@
-import React, { useState } from 'react';
-import { Search, Plus, User, Settings, LogOut, Moon, Menu, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Search, Plus, User, Settings, LogOut, Moon, Sun, Menu, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import CreatePostModal from '../feed/CreatePostModal';
+import { getMyProfile } from '../../services/profile';
 
 const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout, isSidebarCollapsed, toggleCollapse }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+    const [profile, setProfile] = useState(null);
     const { theme, toggleTheme } = useTheme();
+    const dropdownRef = useRef(null);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const logoSrc = theme === 'dark' ? '/logo/yor-bux-dark-logo.png' : '/logo/yor-bux-primary-logo.png';
+    const displayName = profile?.user?.fullname || profile?.user?.name || 'YorBux User';
+    const avatar = profile?.user?.profileImage || 'https://i.pravatar.cc/40?u=yorbux-user';
+
+    useEffect(() => {
+        const loadProfile = async () => {
+            try {
+                const data = await getMyProfile();
+                setProfile(data);
+            } catch {
+                setProfile(null);
+            }
+        };
+
+        loadProfile();
+    }, [location.pathname]);
+
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () => document.removeEventListener('mousedown', handleOutsideClick);
+    }, []);
+
+    useEffect(() => {
+        setIsDropdownOpen(false);
+    }, [location.pathname]);
+
+    const handleNavigate = (path) => {
+        setIsDropdownOpen(false);
+        navigate(path);
+    };
+
+    const handleThemeToggle = () => {
+        toggleTheme();
+        setIsDropdownOpen(false);
+    };
+
+    const handleMenuLogout = () => {
+        setIsDropdownOpen(false);
+        handleLogout();
+    };
 
     return (
         <>
@@ -39,20 +90,29 @@ const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout, isS
                     <button onClick={() => setIsPostModalOpen(true)} className="bg-action-blue text-white p-2.5 rounded-full hover:opacity-90 shadow-md shadow-action-blue/20 transition-all">
                         <Plus size={20} />
                     </button>
-                    <div className="relative flex-shrink-0">
+                    <div ref={dropdownRef} className="relative flex-shrink-0">
                         <div onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="flex items-center gap-3 cursor-pointer">
                             <div className="hidden sm:block">
-                                <p className="font-semibold text-text-main text-sm">Saleh Ahmed</p>
+                                <p className="font-semibold text-text-main text-sm">{displayName}</p>
                             </div>
-                            <img src="https://i.pravatar.cc/40?u=saleh" alt="Saleh Ahmed" className="w-10 h-10 rounded-full flex-shrink-0 border border-border-ui" />
+                            <img src={avatar} alt={displayName} className="w-10 h-10 rounded-full flex-shrink-0 border border-border-ui object-cover" />
                         </div>
                         {isDropdownOpen && (
                             <div className="absolute right-0 mt-3 w-48 bg-bg-surface rounded-xl shadow-xl z-20 border border-border-ui py-2 overflow-hidden">
-                                <a href="#" className="flex items-center gap-3 px-4 py-2.5 text-text-main hover:bg-bg-page text-sm font-medium transition-colors"><User size={18} /><span>Profile</span></a>
-                                <a href="#" className="flex items-center gap-3 px-4 py-2.5 text-text-main hover:bg-bg-page text-sm font-medium transition-colors"><Settings size={18} /><span>Settings</span></a>
-                                <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-4 py-2.5 text-text-main hover:bg-bg-page text-sm font-medium transition-colors"><Moon size={18} /><span>Switch to {theme === 'light' ? 'Dark' : 'Light'}</span></button>
+                                <button onClick={() => handleNavigate('/view-profile')} className="w-full flex items-center gap-3 px-4 py-2.5 text-text-main hover:bg-bg-page text-sm font-medium transition-colors">
+                                    <User size={18} />
+                                    <span>Profile</span>
+                                </button>
+                                <button onClick={() => handleNavigate('/settings')} className="w-full flex items-center gap-3 px-4 py-2.5 text-text-main hover:bg-bg-page text-sm font-medium transition-colors">
+                                    <Settings size={18} />
+                                    <span>Settings</span>
+                                </button>
+                                <button onClick={handleThemeToggle} className="w-full flex items-center gap-3 px-4 py-2.5 text-text-main hover:bg-bg-page text-sm font-medium transition-colors">
+                                    {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                                    <span>Switch to {theme === 'light' ? 'Dark' : 'Light'}</span>
+                                </button>
                                 <div className="h-px bg-border-ui my-1"></div>
-                                <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-red-500 hover:bg-red-50 hover:text-red-600 text-sm font-medium transition-colors">
+                                <button onClick={handleMenuLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-red-500 hover:bg-red-50 hover:text-red-600 text-sm font-medium transition-colors">
                                     <LogOut size={18} />
                                     <span>Logout</span>
                                 </button>

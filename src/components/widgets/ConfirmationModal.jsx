@@ -1,6 +1,14 @@
 import React from 'react';
 
-const ConfirmationModal = ({ isOpen, onClose, onConfirm, username }) => {
+const ConfirmationModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  username,
+  title,
+  description,
+  confirmLabel = 'Confirm'
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -15,11 +23,11 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, username }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="font-bold text-xl text-text-main">
-          Unfollow @{username}
+          {title || `Unfollow @${username}`}
         </h3>
         
         <p className="text-text-sec text-base mt-2 mb-8">
-          Their Tweets will no longer show up in your home timeline.
+          {description || 'Their Tweets will no longer show up in your home timeline.'}
         </p>
 
         <div className="flex gap-4">
@@ -33,7 +41,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, username }) => {
             onClick={onConfirm}
             className="flex-1 bg-action-blue text-white py-3 rounded-xl font-bold text-base hover:opacity-90 shadow-lg shadow-action-blue/20 transition-opacity"
           >
-            Unfollow
+            {confirmLabel}
           </button>
         </div>
       </div>

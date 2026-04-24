@@ -8,6 +8,7 @@ import { getMyProfile } from '../../services/profile';
 const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout, isSidebarCollapsed, toggleCollapse }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+    const [postModalAction, setPostModalAction] = useState('default');
     const [profile, setProfile] = useState(null);
     const { theme, toggleTheme } = useTheme();
     const dropdownRef = useRef(null);
@@ -87,7 +88,7 @@ const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout, isS
 
                 {/* Right Side: Actions & Profile */}
                 <div className="flex items-center justify-end gap-3 sm:gap-5 flex-shrink-0">
-                    <button onClick={() => setIsPostModalOpen(true)} className="bg-action-blue text-white p-2.5 rounded-full hover:opacity-90 shadow-md shadow-action-blue/20 transition-all">
+                    <button onClick={() => { setPostModalAction('default'); setIsPostModalOpen(true); }} className="bg-action-blue text-white p-2.5 rounded-full hover:opacity-90 shadow-md shadow-action-blue/20 transition-all">
                         <Plus size={20} />
                     </button>
                     <div ref={dropdownRef} className="relative flex-shrink-0">
@@ -124,7 +125,12 @@ const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout, isS
                     </button>
                 </div>
             </header>
-            <CreatePostModal isOpen={isPostModalOpen} onClose={() => setIsPostModalOpen(false)} />
+            <CreatePostModal
+                isOpen={isPostModalOpen}
+                onClose={() => setIsPostModalOpen(false)}
+                currentUserProfile={profile}
+                initialAction={postModalAction}
+            />
         </>
     );
 };

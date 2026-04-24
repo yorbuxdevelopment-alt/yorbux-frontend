@@ -1,7 +1,14 @@
 import React from 'react';
 import { X } from 'lucide-react';
 
-const ReportConfirmationModal = ({ isOpen, onClose }) => {
+const ReportConfirmationModal = ({
+  isOpen,
+  onClose,
+  title = 'Thanks for Reporting This Post',
+  description = 'You reported this post to the support team.',
+  confirmLabel = 'Done',
+  onDone
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -22,18 +29,21 @@ const ReportConfirmationModal = ({ isOpen, onClose }) => {
         </div>
         
         <h3 className="font-bold text-xl text-text-main mt-4">
-          Thanks for Reporting This Post
+          {title}
         </h3>
         
         <p className="text-text-sec text-base mt-2 mb-8">
-          You reported this post to the support team.
+          {description}
         </p>
 
         <button 
-          onClick={onClose}
+          onClick={() => {
+            onDone?.();
+            onClose();
+          }}
           className="w-full bg-action-blue text-white py-3 rounded-xl font-bold text-base hover:opacity-90 shadow-lg shadow-action-blue/20 transition-opacity"
         >
-          Done
+          {confirmLabel}
         </button>
       </div>
     </div>

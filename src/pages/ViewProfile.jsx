@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../redux/slice/authSlice';
 import { getMyProfile } from '../services/profile';
+import { getUserSuggestions, ignoreSuggestedUser, sendConnectionRequest } from '../services/suggestions';
 
 const buildLocation = (user) => [user?.city, user?.state, user?.country].filter(Boolean).join(', ') || 'Location not added';
 const formatExperience = (value) => {
@@ -44,6 +45,10 @@ const ViewProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(true);
+  const [suggestionsError, setSuggestionsError] = useState('');
+  const [activeSuggestionId, setActiveSuggestionId] = useState('');
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -58,6 +63,34 @@ const ViewProfile = () => {
     };
 
     loadProfile();
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadSuggestions = async () => {
+      setSuggestionsLoading(true);
+      setSuggestionsError('');
+
+      try {
+        const data = await getUserSuggestions({ limit: 3 });
+        if (!active) return;
+        setSuggestions(data);
+      } catch (requestError) {
+        if (!active) return;
+        setSuggestionsError(requestError.response?.data?.message || 'Suggestions load nahi ho paayi');
+      } finally {
+        if (active) {
+          setSuggestionsLoading(false);
+        }
+      }
+    };
+
+    loadSuggestions();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const completion = useMemo(() => getProfileCompletion(profile), [profile]);
@@ -99,6 +132,32 @@ const ViewProfile = () => {
   const handleLogout = () => {
     dispatch(logout());
     navigate('/signin');
+  };
+
+  const handleAddSuggestion = async (suggestionId) => {
+    setActiveSuggestionId(suggestionId);
+
+    try {
+      await sendConnectionRequest(suggestionId);
+      setSuggestions((current) => current.filter((item) => item.id !== suggestionId));
+    } catch (requestError) {
+      setSuggestionsError(requestError.response?.data?.message || 'Follow request send nahi ho paayi');
+    } finally {
+      setActiveSuggestionId('');
+    }
+  };
+
+  const handleIgnoreSuggestion = async (suggestionId) => {
+    setActiveSuggestionId(suggestionId);
+
+    try {
+      await ignoreSuggestedUser(suggestionId);
+      setSuggestions((current) => current.filter((item) => item.id !== suggestionId));
+    } catch (requestError) {
+      setSuggestionsError(requestError.response?.data?.message || 'Suggestion ignore nahi ho paayi');
+    } finally {
+      setActiveSuggestionId('');
+    }
   };
 
   if (loading) {
@@ -223,22 +282,56 @@ const ViewProfile = () => {
           <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 p-6">
             <h3 className="text-gray-900 font-extrabold text-[15px] mb-5 border-b border-gray-100 pb-4">User Suggestions</h3>
             <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center justify-between group">
-                  <div className="flex items-center gap-3">
-                    <img src={`https://i.pravatar.cc/150?img=${i + 10}`} alt="User" className="w-10 h-10 rounded-full object-cover border border-gray-100 group-hover:border-blue-200 transition-colors" />
-                    <div>
-                      <h4 className="text-[13px] font-bold text-blue-600 group-hover:text-blue-700 transition-colors line-clamp-1">Professional User {i}</h4>
-                      <p className="text-[11px] text-gray-500 font-medium mt-0.5">Location, City</p>
+              {suggestionsLoading ? (
+                <p className="text-sm text-gray-500">Suggestions loading...</p>
+              ) : suggestionsError ? (
+                <p className="text-sm text-red-600">{suggestionsError}</p>
+              ) : suggestions.length === 0 ? (
+                <p className="text-sm text-gray-500">No suggestions available right now.</p>
+              ) : (
+                suggestions.map((suggestion) => (
+                  <div key={suggestion.id} className="flex items-center justify-between group gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={suggestion.avatar}
+                        alt={suggestion.name}
+                        className="w-10 h-10 rounded-full object-cover border border-gray-100 group-hover:border-blue-200 transition-colors"
+                      />
+                      <div className="min-w-0">
+                        <h4 className="text-[13px] font-bold text-blue-600 group-hover:text-blue-700 transition-colors line-clamp-1">
+                          {suggestion.name}
+                        </h4>
+                        <p className="text-[11px] text-gray-500 font-medium mt-0.5 line-clamp-1">
+                          {suggestion.role}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleIgnoreSuggestion(suggestion.id)}
+                        disabled={activeSuggestionId === suggestion.id}
+                        className="px-2.5 py-2 text-[11px] font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-60"
+                        title="Ignore User"
+                      >
+                        Ignore
+                      </button>
+                      <button
+                        onClick={() => handleAddSuggestion(suggestion.id)}
+                        disabled={activeSuggestionId === suggestion.id}
+                        className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors disabled:opacity-60"
+                        title="Add User"
+                      >
+                        <UserPlus size={16} />
+                      </button>
                     </div>
                   </div>
-                  <button className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors" title="Add User">
-                    <UserPlus size={16} />
-                  </button>
-                </div>
-              ))}
+                ))
+              )}
             </div>
-            <button className="w-full mt-6 py-2.5 text-blue-600 bg-white border-2 border-blue-100 rounded-xl text-[13px] font-bold hover:bg-blue-50 active:scale-95 transition-all">
+            <button
+              onClick={() => navigate('/community')}
+              className="w-full mt-6 py-2.5 text-blue-600 bg-white border-2 border-blue-100 rounded-xl text-[13px] font-bold hover:bg-blue-50 active:scale-95 transition-all"
+            >
               Show all
             </button>
           </div>

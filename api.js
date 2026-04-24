@@ -8,7 +8,6 @@ const api = axios.create({
   },
 });
 
-
 // Optional: Agar future me Authentication Tokens bhejne ho toh yahan interceptor laga sakte hain
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token'); // Assuming JWT token is stored in localStorage

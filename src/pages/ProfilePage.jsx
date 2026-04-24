@@ -1,26 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { MapPin, Building2, ChevronDown, Image as ImageIcon, Briefcase, UserCheck, CheckCircle, Clock, RefreshCcw } from 'lucide-react';
+import { MapPin, Building2, ChevronDown, Image as ImageIcon, Briefcase, UserCheck, CheckCircle, RefreshCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getMyProfile } from '../services/profile';
-
-const fallbackPosts = [
-  {
-    id: 1,
-    author: 'YorBux Network',
-    avatar: 'https://i.pravatar.cc/150?u=yorbux-network',
-    time: 'Today',
-    content: 'Complete your profile to get better professional visibility and more relevant opportunities.',
-    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    id: 2,
-    author: 'Career Desk',
-    avatar: 'https://i.pravatar.cc/150?u=career-desk',
-    time: 'Recently',
-    content: 'Keep your organisation, designation and experience updated so recruiters can discover you faster.',
-    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
-  }
-];
+import { getMyPosts } from '../services/posts';
+import PostCard from '../components/feed/PostCard';
 
 const buildLocation = (user) => [user?.city, user?.state, user?.country].filter(Boolean).join(', ') || 'Location not added';
 
@@ -50,6 +33,9 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
+  const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [postsError, setPostsError] = useState('');
   const navigate = useNavigate();
 
   const loadProfile = async ({ silent = false } = {}) => {
@@ -76,7 +62,39 @@ const ProfilePage = () => {
     loadProfile();
   }, []);
 
-  const displayPosts = activeTab === 'Connections' ? fallbackPosts.slice(0, 1) : fallbackPosts;
+  useEffect(() => {
+    let active = true;
+
+    const loadPosts = async () => {
+      setPostsLoading(true);
+      setPostsError('');
+
+      try {
+        const data = await getMyPosts({
+          page: 1,
+          limit: 20,
+          publishType: activeTab === 'Connections' ? 'MY_CONNECTIONS' : 'PUBLIC'
+        });
+
+        if (!active) return;
+        setPosts(data.posts || []);
+      } catch (requestError) {
+        if (!active) return;
+        setPostsError(requestError.response?.data?.message || 'Posts load nahi ho paaye');
+      } finally {
+        if (active) {
+          setPostsLoading(false);
+        }
+      }
+    };
+
+    loadPosts();
+
+    return () => {
+      active = false;
+    };
+  }, [activeTab]);
+
   const completion = useMemo(() => getProfileCompletion(profile), [profile]);
   const user = profile?.user;
   const professional = profile?.professionalDetail;
@@ -216,29 +234,39 @@ const ProfilePage = () => {
             </div>
 
             <div className="p-6 space-y-6 overflow-y-auto max-h-[600px] no-scrollbar">
-              {displayPosts.map((post) => (
-                <div key={post.id} className="pb-6 border-b border-gray-100 last:border-0 last:pb-0">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3.5 group">
-                      <div className="relative">
-                        <img src={post.avatar} className="w-12 h-12 rounded-full object-cover ring-2 ring-transparent group-hover:ring-blue-200 transition-all" alt="User" />
-                        <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
-                      </div>
-                      <div>
-                        <h4 className="text-[15px] font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">{post.author}</h4>
-                        <div className="flex items-center gap-1.5 text-[12px] text-gray-500 font-medium mt-0.5">
-                          <Clock size={13} />
-                          <span>{post.time}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-[15px] text-gray-700 mb-5 leading-relaxed">{post.content}</p>
-                  <div className="rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center min-h-[300px] shadow-sm">
-                    <img src={post.image} alt="Post Attachment" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-                  </div>
+              {postsLoading ? (
+                <p className="text-sm text-gray-500">Posts loading...</p>
+              ) : postsError ? (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{postsError}</div>
+              ) : !posts.length ? (
+                <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50/70 px-5 py-10 text-center">
+                  <p className="text-sm font-semibold text-gray-800">No posts in this tab yet</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {activeTab === 'Connections'
+                      ? 'Create a My Connections post to see it here.'
+                      : 'Create a Public post to see it here.'}
+                  </p>
                 </div>
-              ))}
+              ) : (
+                posts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    currentUser={user ? {
+                      id: user.id,
+                      name: displayName,
+                      avatar
+                    } : null}
+                    onPostUpdate={(updatedPost) =>
+                      setPosts((currentPosts) =>
+                        currentPosts.map((currentPost) =>
+                          currentPost.id === updatedPost.id ? { ...currentPost, ...updatedPost } : currentPost
+                        )
+                      )
+                    }
+                  />
+                ))
+              )}
             </div>
           </div>
         </div>

@@ -1,8 +1,16 @@
-import React from 'react';
-import { X, Link, Code, Facebook, Twitter, Linkedin, Mail } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { X, Facebook, Twitter, Linkedin, Mail } from 'lucide-react';
 
-const ShareModal = ({ isOpen, onClose }) => {
+const ShareModal = ({ isOpen, onClose, post }) => {
   if (!isOpen) return null;
+
+  const [copied, setCopied] = useState(false);
+  const postId = post?.id || post?._id || '';
+  const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+  const shareUrl = useMemo(
+    () => `${baseUrl.replace(/\/$/, '')}/post/${postId || 'feed'}`,
+    [baseUrl, postId]
+  );
 
   const socialButtons = [
     { icon: <Facebook size={24} />, name: 'Facebook' },
@@ -10,6 +18,16 @@ const ShareModal = ({ isOpen, onClose }) => {
     { icon: <Linkedin size={24} />, name: 'LinkedIn' },
     { icon: <Mail size={24} />, name: 'Email' },
   ];
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div 
@@ -42,11 +60,15 @@ const ShareModal = ({ isOpen, onClose }) => {
           <input 
             type="text"
             readOnly
-            value="https://yorbux.com/post/12345"
+            value={shareUrl}
             className="w-full bg-bg-page border border-border-ui rounded-lg p-3 pr-24 text-sm text-text-sec"
           />
-          <button className="absolute right-1 top-1 bottom-1 bg-action-blue text-white px-4 rounded-md text-sm font-bold hover:opacity-90">
-            Copy
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="absolute right-1 top-1 bottom-1 bg-action-blue text-white px-4 rounded-md text-sm font-bold hover:opacity-90"
+          >
+            {copied ? 'Copied' : 'Copy'}
           </button>
         </div>
       </div>

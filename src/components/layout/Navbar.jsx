@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Search, Plus, User, Settings, LogOut, Moon, Sun, Menu, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Plus, User, Settings, LogOut, Moon, Sun, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import CreatePostModal from '../feed/CreatePostModal';
@@ -120,9 +120,6 @@ const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout, isS
                             </div>
                         )}
                     </div>
-                    <button onClick={() => setIsRightSidebarOpen(prev => !prev)} className="lg:hidden text-text-sec hover:text-action-blue flex-shrink-0 p-1.5 sm:p-2 bg-bg-page rounded-full border border-border-ui transition-colors">
-                        <Menu size={20} />
-                    </button>
                 </div>
             </header>
             <CreatePostModal

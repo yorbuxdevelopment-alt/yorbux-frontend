@@ -21,7 +21,10 @@ const designationOptions = [
 const initialCertification = {
   name: '',
   issuingAuthority: '',
-  licenseNumber: ''
+  licenseNumber: '',
+  documentUrl: '',
+  documentFile: null,
+  documentFileName: ''
 };
 
 const SellerOnboarding = () => {
@@ -89,7 +92,12 @@ const SellerOnboarding = () => {
           bio: profile.bio || '',
           category: profile.category || 'Financial Services',
           certifications: Array.isArray(profile.certifications) && profile.certifications.length
-            ? profile.certifications
+            ? profile.certifications.map((certification) => ({
+              ...initialCertification,
+              ...certification,
+              documentFile: null,
+              documentFileName: ''
+            }))
             : [{ ...initialCertification }],
           servicesOffered: Array.isArray(profile.servicesOffered) ? profile.servicesOffered : [],
           associatedCompanies: Array.isArray(profile.associatedCompanies) ? profile.associatedCompanies : [],
@@ -227,6 +235,36 @@ const SellerOnboarding = () => {
     }));
   };
 
+  const handleCertificationDocumentChange = (index, event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Only PDF, JPG, or PNG certificate documents are allowed.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Certificate document must be under 5 MB.');
+      return;
+    }
+
+    setError('');
+    setForm((current) => ({
+      ...current,
+      certifications: current.certifications.map((certification, itemIndex) =>
+        itemIndex === index
+          ? {
+            ...certification,
+            documentFile: file,
+            documentFileName: file.name
+          }
+          : certification
+      )
+    }));
+  };
+
   const addOrganisation = (organisationName) => {
     const name = String(organisationName || '').trim();
     if (!name) return;
@@ -277,22 +315,44 @@ const SellerOnboarding = () => {
       bio: form.bio,
       category: form.category,
       certifications: form.certifications.filter((certification) =>
-        certification.name || certification.issuingAuthority || certification.licenseNumber
-      ),
+        certification.name || certification.issuingAuthority || certification.licenseNumber || certification.documentUrl || certification.documentFile
+      ).map((certification) => ({
+        name: certification.name,
+        issuingAuthority: certification.issuingAuthority,
+        licenseNumber: certification.licenseNumber,
+        validTill: certification.validTill,
+        documentUrl: certification.documentUrl
+      })),
       servicesOffered: form.servicesOffered,
       serviceLocations: form.serviceLocations,
       associatedCompanies: form.associatedCompanies
     };
 
     if (!form.profilePhoto) {
-      return payload;
+      const hasCertificationFiles = form.certifications.some((certification) => certification.documentFile);
+      if (!hasCertificationFiles) {
+        return payload;
+      }
     }
 
     const formData = new FormData();
     Object.entries(payload).forEach(([key, value]) => {
       formData.append(key, Array.isArray(value) ? JSON.stringify(value) : value);
     });
-    formData.append('businessLogo', form.profilePhoto);
+    if (form.profilePhoto) {
+      formData.append('businessLogo', form.profilePhoto);
+    }
+
+    form.certifications
+      .filter((certification) =>
+        certification.name || certification.issuingAuthority || certification.licenseNumber || certification.documentUrl || certification.documentFile
+      )
+      .forEach((certification, certificationIndex) => {
+        if (certification.documentFile) {
+          formData.append('certificationDocuments', certification.documentFile);
+          formData.append('certificationDocumentIndexes', String(certificationIndex));
+        }
+      });
 
     return formData;
   };
@@ -458,10 +518,24 @@ const SellerOnboarding = () => {
                           <span className="text-sm font-bold text-text-main">License / Registration Number</span>
                           <input value={certification.licenseNumber} onChange={(event) => updateCertification(index, 'licenseNumber', event.target.value)} placeholder="Enter license number" className="w-full bg-bg-surface border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
                         </label>
-                        <div className="sm:col-span-2 border-2 border-dashed border-border-ui rounded-lg p-5 text-center bg-bg-surface">
-                          <FileUp className="mx-auto text-action-blue" size={26} />
-                          <p className="text-action-blue text-sm font-bold mt-2">Document upload can be attached later</p>
-                          <p className="text-text-sec text-xs mt-1">PDF, JPG, or PNG</p>
+                        <div className="sm:col-span-2">
+                          <input
+                            id={`certification-document-${index}`}
+                            type="file"
+                            accept=".pdf,image/jpeg,image/png"
+                            onChange={(event) => handleCertificationDocumentChange(index, event)}
+                            className="hidden"
+                          />
+                          <label htmlFor={`certification-document-${index}`} className="block border-2 border-dashed border-border-ui rounded-lg p-5 text-center bg-bg-surface cursor-pointer hover:border-action-blue">
+                            <FileUp className="mx-auto text-action-blue" size={26} />
+                            <p className="text-action-blue text-sm font-bold mt-2">Upload certificate document</p>
+                            <p className="text-text-sec text-xs mt-1">PDF, JPG, or PNG</p>
+                          </label>
+                          {certification.documentFileName || certification.documentUrl ? (
+                            <div className="mt-2 rounded-lg bg-bg-surface border border-border-ui px-3 py-2 text-xs text-text-sec">
+                              {certification.documentFileName || certification.documentUrl}
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     </div>

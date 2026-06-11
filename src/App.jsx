@@ -19,6 +19,9 @@ import Jobs from './pages/Jobs';
 import PostJob from './pages/PostJob';
 import EditProfile from './pages/EditProfile';
 import ViewProfile from './pages/ViewProfile';
+import SellerListing from './pages/SellerListing';
+import SellerProfile from './pages/SellerProfile';
+import SellerOnboarding from './pages/SellerOnboarding';
 
 function App() {
   // Redux se isAuthenticated aur role fetch kar rahe hain
@@ -41,24 +44,26 @@ function App() {
 
       {/* ROLE BASED ROUTING YAHAN ADD KAR SAKTE HAIN LATER */}
       {/* Example: isAuthenticated && role === 'admin' ? <AdminRoutes /> : null */}
-      {isAuthenticated ? (
-        <Route path="/" element={<MainLayout handleLogout={handleLogout} />}>
-          <Route index element={<Feed />} />
-          <Route path="community" element={<CommunityPage />} />
-          <Route path="jobs" element={<Jobs />} />
-          <Route path="post-job" element={<PostJob />} />
-          <Route path="messages" element={<MessagesPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="explore" element={<ExplorePage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="dashboard/products" element={<Products />} />
-          <Route path="edit-profile" element={<EditProfile/>} />
-          <Route path="view-profile" element={<ViewProfile/>} />
-        </Route>
-      ) : (
-        <Route path="*" element={<Navigate to="/signin" />} />
-      )}
+      <Route path="/" element={<MainLayout handleLogout={handleLogout} />}>
+        <Route index element={<Navigate to="/marketplace" replace />} />
+        <Route path="marketplace" element={<SellerListing />} />
+        <Route path="marketplace/sellers/:sellerId" element={<SellerProfile />} />
+        <Route path="feed" element={isAuthenticated ? <Feed /> : <Navigate to="/signin" />} />
+        <Route path="community" element={isAuthenticated ? <CommunityPage /> : <Navigate to="/signin" />} />
+        <Route path="jobs" element={isAuthenticated ? <Jobs /> : <Navigate to="/signin" />} />
+        <Route path="post-job" element={isAuthenticated ? <PostJob /> : <Navigate to="/signin" />} />
+        <Route path="messages" element={isAuthenticated ? <MessagesPage /> : <Navigate to="/signin" />} />
+        <Route path="notifications" element={isAuthenticated ? <NotificationsPage /> : <Navigate to="/signin" />} />
+        <Route path="explore" element={isAuthenticated ? <ExplorePage /> : <Navigate to="/signin" />} />
+        <Route path="seller/onboarding" element={isAuthenticated ? <SellerOnboarding /> : <Navigate to="/signin" />} />
+        <Route path="profile" element={isAuthenticated ? <ProfilePage /> : <Navigate to="/signin" />} />
+        <Route path="settings" element={isAuthenticated ? <SettingsPage /> : <Navigate to="/signin" />} />
+        <Route path="dashboard/products" element={isAuthenticated ? <Products /> : <Navigate to="/signin" />} />
+        <Route path="edit-profile" element={isAuthenticated ? <EditProfile/> : <Navigate to="/signin" />} />
+        <Route path="view-profile" element={isAuthenticated ? <ViewProfile/> : <Navigate to="/signin" />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/marketplace" />} />
     </Routes>
   );
 }

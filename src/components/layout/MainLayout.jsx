@@ -14,7 +14,7 @@ function MainLayout({ handleLogout }) {
   const location = useLocation();
   const { theme } = useTheme();
 
-  const showRightBar = location.pathname === '/';
+  const showRightBar = location.pathname === '/feed';
   const logoSrc = theme === 'dark' ? '/logo/yor-bux-dark-logo.png' : '/logo/yor-bux-primary-logo.png';
   // const showFriendsList = !['/profile', '/settings', '/messages'].includes(location.pathname);
 

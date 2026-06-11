@@ -1,11 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Users, MessageSquareMore, Bell, User, Settings, LogOut, Briefcase } from 'lucide-react';
+import { Home, Users, MessageSquareMore, Bell, User, Settings, LogOut, Briefcase, Landmark, ShieldCheck } from 'lucide-react';
 
 const Sidebar = ({ handleLogout, isCollapsed }) => {
     const location = useLocation();
     const menuItems = [
-        { name: 'Feed', icon: <Home size={20} />, path: '/' },
+        { name: 'Feed', icon: <Home size={20} />, path: '/feed' },
+        { name: 'Marketplace', icon: <Landmark size={20} />, path: '/marketplace' },
         { name: 'Members', icon: <Users size={20} />, path: '/community' },
+        { name: 'Become Seller', icon: <ShieldCheck size={20} />, path: '/seller/onboarding' },
         // { name: 'Jobs', icon: <Briefcase size={20} />, path: '/jobs' },
         // { name: 'Messages', icon: <MessageSquareMore size={20} />, path: '/messages' },
         // { name: 'Notification', icon: <Bell size={20} />, count: 2, path: '/notifications' },

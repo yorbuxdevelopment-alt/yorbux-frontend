@@ -167,6 +167,10 @@ const SellerProfile = () => {
     );
   }
 
+  const sellerInitials = seller.name
+    ? seller.name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
+    : 'NA';
+
   return (
     <div className="min-h-[calc(100vh-96px)] -m-4 md:-m-6 bg-bg-page p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
@@ -177,16 +181,22 @@ const SellerProfile = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
           <aside className="bg-bg-surface border border-border-ui rounded-xl p-6 text-center shadow-sm lg:sticky lg:top-24 h-fit">
-            <img src={seller.avatar} alt={seller.name} className="w-28 h-28 rounded-full object-cover mx-auto border-4 border-bg-page" />
+            {seller.avatar ? (
+              <img src={seller.avatar} alt={seller.name} className="w-28 h-28 rounded-full object-cover mx-auto border-4 border-bg-page" />
+            ) : (
+              <div className="w-28 h-28 rounded-full mx-auto border-4 border-bg-page bg-bg-page flex items-center justify-center text-action-blue font-black text-xl">
+                {sellerInitials}
+              </div>
+            )}
             <div className="flex items-center justify-center gap-2 mt-4">
-              <h1 className="text-text-main text-xl font-black">{seller.name}</h1>
+              <h1 className="text-text-main text-xl font-black">{seller.name || 'Advisor'}</h1>
               {seller.verified ? <BadgeCheck size={18} className="text-emerald-500" /> : null}
             </div>
-            <p className="text-text-sec text-sm mt-1">{seller.title}</p>
+            {seller.title ? <p className="text-text-sec text-sm mt-1">{seller.title}</p> : null}
 
             <div className="flex flex-wrap items-center justify-center gap-3 text-text-sec text-sm mt-4">
-              <span className="inline-flex items-center gap-1.5"><MapPin size={15} />{seller.location}</span>
-              <span className="inline-flex items-center gap-1.5"><BriefcaseBusiness size={15} />{seller.experience || 0}+ Years</span>
+              {seller.location ? <span className="inline-flex items-center gap-1.5"><MapPin size={15} />{seller.location}</span> : null}
+              {seller.experience ? <span className="inline-flex items-center gap-1.5"><BriefcaseBusiness size={15} />{seller.experience}+ Years</span> : null}
             </div>
 
             <div className="flex items-center justify-center gap-1.5 text-amber-500 mt-4">

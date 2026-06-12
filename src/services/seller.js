@@ -17,11 +17,6 @@ export const getSellerDashboard = async () => {
   return response.data || {};
 };
 
-export const createSellerPost = async (payload) => {
-  const response = await api.post('/seller/posts', payload);
-  return response.data || {};
-};
-
 export const getSellerLeads = async (params = {}) => {
   const response = await api.get('/seller/leads', { params });
   return response.data || {};

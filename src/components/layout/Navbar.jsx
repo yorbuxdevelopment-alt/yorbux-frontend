@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Search, Plus, User, Settings, LogOut, Moon, Sun, Users, ChevronLeft, ChevronRight, FileText, Store, X, Send, BriefcaseBusiness } from 'lucide-react';
+import { Search, Plus, User, Settings, LogOut, Moon, Sun, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import CreatePostModal from '../feed/CreatePostModal';

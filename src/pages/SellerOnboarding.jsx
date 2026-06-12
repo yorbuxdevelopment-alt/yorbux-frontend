@@ -1,30 +1,22 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Award, Camera, Check, ChevronLeft, ChevronRight, FileUp, MapPin, Plus, ShieldCheck, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getSellerProfile, updateSellerProfile } from '../services/seller';
-import { getCompanies, getServiceCategories } from '../services/masters';
+import { updateSellerProfile } from '../services/seller';
 
-const designationOptions = [
-  'Branch Operations Manager',
-  'Branch Manager',
-  'Auditor',
-  'Assistant Vice President',
-  'Assistant Manager',
-  'Assistant General Manager',
-  'Assistant Branch Manager',
-  'Alternative Investments Specialist',
-  'Agency Development Manager',
-  'Actuary',
-  'Account Executive'
+const serviceOptions = [
+  'Term Insurance',
+  'Health Insurance',
+  'Auto Insurance',
+  'Home Loans',
+  'Business Loans',
+  'Mutual Funds',
+  'Credit Cards'
 ];
 
 const initialCertification = {
   name: '',
   issuingAuthority: '',
-  licenseNumber: '',
-  documentUrl: '',
-  documentFile: null,
-  documentFileName: ''
+  licenseNumber: ''
 };
 
 const SellerOnboarding = () => {
@@ -37,18 +29,13 @@ const SellerOnboarding = () => {
     bio: '',
     category: 'Financial Services',
     certifications: [{ ...initialCertification }],
-    servicesOffered: [],
-    associatedCompanies: [],
-    organisationQuery: '',
+    servicesOffered: ['Term Insurance', 'Health Insurance', 'Mutual Funds'],
+    associatedCompaniesText: '',
     locationInput: '',
-    serviceLocations: [],
+    serviceLocations: [{ city: 'Bhopal', state: 'MP', country: 'India' }, { city: 'Indore', state: 'MP', country: 'India' }],
     profilePhoto: null,
     profilePhotoPreview: ''
   });
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [serviceOptions, setServiceOptions] = useState([]);
-  const [organisations, setOrganisations] = useState([]);
-  const [organisationsLoading, setOrganisationsLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
   const [error, setError] = useState('');
@@ -59,91 +46,6 @@ const SellerOnboarding = () => {
     { number: 2, label: 'Certifications' },
     { number: 3, label: 'Services & Locations' }
   ], []);
-
-  useEffect(() => {
-    let active = true;
-
-    const loadSellerProfile = async () => {
-      setLoadingProfile(true);
-
-      try {
-        const [data, serviceCategories] = await Promise.all([
-          getSellerProfile().catch((requestError) => {
-            if (requestError.response?.status === 404) return { profile: null };
-            throw requestError;
-          }),
-          getServiceCategories().catch(() => [])
-        ]);
-        const profile = data.profile || {};
-
-        if (!active) return;
-
-        const categoryNames = Array.isArray(serviceCategories)
-          ? serviceCategories.map((category) => category.name).filter(Boolean)
-          : [];
-        const profileServices = Array.isArray(profile.servicesOffered) ? profile.servicesOffered : [];
-        setServiceOptions(Array.from(new Set([...categoryNames, ...profileServices])));
-
-        setForm((current) => ({
-          ...current,
-          businessName: profile.businessName || '',
-          designation: profile.designation || '',
-          experienceYears: profile.experienceYears !== undefined && profile.experienceYears !== null ? String(profile.experienceYears) : '',
-          bio: profile.bio || '',
-          category: profile.category || 'Financial Services',
-          certifications: Array.isArray(profile.certifications) && profile.certifications.length
-            ? profile.certifications.map((certification) => ({
-              ...initialCertification,
-              ...certification,
-              documentFile: null,
-              documentFileName: ''
-            }))
-            : [{ ...initialCertification }],
-          servicesOffered: Array.isArray(profile.servicesOffered) ? profile.servicesOffered : [],
-          associatedCompanies: Array.isArray(profile.associatedCompanies) ? profile.associatedCompanies : [],
-          serviceLocations: Array.isArray(profile.serviceLocations) ? profile.serviceLocations : [],
-          profilePhotoPreview: profile.businessLogo || ''
-        }));
-      } catch (requestError) {
-        if (!active) return;
-        setError(requestError.response?.data?.message || 'Seller profile load nahi ho paaya');
-      } finally {
-        if (active) setLoadingProfile(false);
-      }
-    };
-
-    loadSellerProfile();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-    const query = form.organisationQuery.trim();
-    const timer = window.setTimeout(async () => {
-      setOrganisationsLoading(true);
-
-      try {
-        const data = await getCompanies({ q: query, limit: 25 });
-
-        if (!active) return;
-        setOrganisations(Array.isArray(data) ? data : []);
-      } catch {
-        if (active) setOrganisations([]);
-      } finally {
-        if (active) setOrganisationsLoading(false);
-      }
-    }, query ? 250 : 0);
-
-    return () => {
-      active = false;
-      window.clearTimeout(timer);
-    };
-  }, [form.organisationQuery]);
-
-  const filteredOrganisations = useMemo(() => organisations.slice(0, 25), [organisations]);
 
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
@@ -223,56 +125,6 @@ const SellerOnboarding = () => {
     }));
   };
 
-  const handleCertificationDocumentChange = (index, event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-    if (!allowedTypes.includes(file.type)) {
-      setError('Only PDF, JPG, or PNG certificate documents are allowed.');
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Certificate document must be under 5 MB.');
-      return;
-    }
-
-    setError('');
-    setForm((current) => ({
-      ...current,
-      certifications: current.certifications.map((certification, itemIndex) =>
-        itemIndex === index
-          ? {
-            ...certification,
-            documentFile: file,
-            documentFileName: file.name
-          }
-          : certification
-      )
-    }));
-  };
-
-  const addOrganisation = (organisationName) => {
-    const name = String(organisationName || '').trim();
-    if (!name) return;
-
-    setForm((current) => ({
-      ...current,
-      organisationQuery: '',
-      associatedCompanies: current.associatedCompanies.includes(name)
-        ? current.associatedCompanies
-        : [...current.associatedCompanies, name]
-    }));
-  };
-
-  const removeOrganisation = (organisationName) => {
-    setForm((current) => ({
-      ...current,
-      associatedCompanies: current.associatedCompanies.filter((company) => company !== organisationName)
-    }));
-  };
-
   const removeLocation = (index) => {
     setForm((current) => ({
       ...current,
@@ -303,44 +155,25 @@ const SellerOnboarding = () => {
       bio: form.bio,
       category: form.category,
       certifications: form.certifications.filter((certification) =>
-        certification.name || certification.issuingAuthority || certification.licenseNumber || certification.documentUrl || certification.documentFile
-      ).map((certification) => ({
-        name: certification.name,
-        issuingAuthority: certification.issuingAuthority,
-        licenseNumber: certification.licenseNumber,
-        validTill: certification.validTill,
-        documentUrl: certification.documentUrl
-      })),
+        certification.name || certification.issuingAuthority || certification.licenseNumber
+      ),
       servicesOffered: form.servicesOffered,
       serviceLocations: form.serviceLocations,
-      associatedCompanies: form.associatedCompanies
+      associatedCompanies: form.associatedCompaniesText
+        .split(',')
+        .map((company) => company.trim())
+        .filter(Boolean)
     };
 
     if (!form.profilePhoto) {
-      const hasCertificationFiles = form.certifications.some((certification) => certification.documentFile);
-      if (!hasCertificationFiles) {
-        return payload;
-      }
+      return payload;
     }
 
     const formData = new FormData();
     Object.entries(payload).forEach(([key, value]) => {
       formData.append(key, Array.isArray(value) ? JSON.stringify(value) : value);
     });
-    if (form.profilePhoto) {
-      formData.append('businessLogo', form.profilePhoto);
-    }
-
-    form.certifications
-      .filter((certification) =>
-        certification.name || certification.issuingAuthority || certification.licenseNumber || certification.documentUrl || certification.documentFile
-      )
-      .forEach((certification, certificationIndex) => {
-        if (certification.documentFile) {
-          formData.append('certificationDocuments', certification.documentFile);
-          formData.append('certificationDocumentIndexes', String(certificationIndex));
-        }
-      });
+    formData.append('businessLogo', form.profilePhoto);
 
     return formData;
   };
@@ -420,7 +253,6 @@ const SellerOnboarding = () => {
           <div className="p-5 sm:p-8">
             {error ? <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 mb-5">{error}</div> : null}
             {success ? <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 mb-5">{success}</div> : null}
-            {loadingProfile ? <div className="rounded-xl border border-border-ui bg-bg-page px-4 py-3 text-sm text-text-sec mb-5">Seller profile loading...</div> : null}
 
             {step === 1 ? (
               <section>
@@ -449,20 +281,15 @@ const SellerOnboarding = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <label className="space-y-1.5 sm:col-span-2">
                     <span className="text-sm font-bold text-text-main">Full Name / Business Name</span>
-                    <input value={form.businessName} onChange={(event) => updateField('businessName', event.target.value)} placeholder="Enter full name or business name" className="w-full bg-bg-page border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
+                    <input value={form.businessName} onChange={(event) => updateField('businessName', event.target.value)} placeholder="e.g., Mayank Agnihotri" className="w-full bg-bg-page border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
                   </label>
                   <label className="space-y-1.5">
                     <span className="text-sm font-bold text-text-main">Professional Designation</span>
-                    <select value={form.designation} onChange={(event) => updateField('designation', event.target.value)} className="w-full bg-bg-page border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue">
-                      <option value="">Select designation</option>
-                      {designationOptions.map((designation) => (
-                        <option key={designation} value={designation}>{designation}</option>
-                      ))}
-                    </select>
+                    <input value={form.designation} onChange={(event) => updateField('designation', event.target.value)} placeholder="Senior Financial Advisor" className="w-full bg-bg-page border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
                   </label>
                   <label className="space-y-1.5">
                     <span className="text-sm font-bold text-text-main">Experience (Years)</span>
-                    <input type="number" value={form.experienceYears} onChange={(event) => updateField('experienceYears', event.target.value)} placeholder="Enter years of experience" className="w-full bg-bg-page border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
+                    <input type="number" value={form.experienceYears} onChange={(event) => updateField('experienceYears', event.target.value)} placeholder="5" className="w-full bg-bg-page border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
                   </label>
                   <label className="space-y-1.5 sm:col-span-2">
                     <span className="text-sm font-bold text-text-main">Professional Summary</span>
@@ -496,34 +323,20 @@ const SellerOnboarding = () => {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <label className="space-y-1.5">
                           <span className="text-sm font-bold text-text-main">Certification Name</span>
-                          <input value={certification.name} onChange={(event) => updateCertification(index, 'name', event.target.value)} placeholder="Enter certification name" className="w-full bg-bg-surface border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
+                          <input value={certification.name} onChange={(event) => updateCertification(index, 'name', event.target.value)} placeholder="IRDA Licensed" className="w-full bg-bg-surface border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
                         </label>
                         <label className="space-y-1.5">
                           <span className="text-sm font-bold text-text-main">Authority</span>
-                          <input value={certification.issuingAuthority} onChange={(event) => updateCertification(index, 'issuingAuthority', event.target.value)} placeholder="Enter issuing authority" className="w-full bg-bg-surface border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
+                          <input value={certification.issuingAuthority} onChange={(event) => updateCertification(index, 'issuingAuthority', event.target.value)} placeholder="IRDAI, AMFI, SEBI" className="w-full bg-bg-surface border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
                         </label>
                         <label className="space-y-1.5 sm:col-span-2">
                           <span className="text-sm font-bold text-text-main">License / Registration Number</span>
                           <input value={certification.licenseNumber} onChange={(event) => updateCertification(index, 'licenseNumber', event.target.value)} placeholder="Enter license number" className="w-full bg-bg-surface border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
                         </label>
-                        <div className="sm:col-span-2">
-                          <input
-                            id={`certification-document-${index}`}
-                            type="file"
-                            accept=".pdf,image/jpeg,image/png"
-                            onChange={(event) => handleCertificationDocumentChange(index, event)}
-                            className="hidden"
-                          />
-                          <label htmlFor={`certification-document-${index}`} className="block border-2 border-dashed border-border-ui rounded-lg p-5 text-center bg-bg-surface cursor-pointer hover:border-action-blue">
-                            <FileUp className="mx-auto text-action-blue" size={26} />
-                            <p className="text-action-blue text-sm font-bold mt-2">Upload certificate document</p>
-                            <p className="text-text-sec text-xs mt-1">PDF, JPG, or PNG</p>
-                          </label>
-                          {certification.documentFileName || certification.documentUrl ? (
-                            <div className="mt-2 rounded-lg bg-bg-surface border border-border-ui px-3 py-2 text-xs text-text-sec">
-                              {certification.documentFileName || certification.documentUrl}
-                            </div>
-                          ) : null}
+                        <div className="sm:col-span-2 border-2 border-dashed border-border-ui rounded-lg p-5 text-center bg-bg-surface">
+                          <FileUp className="mx-auto text-action-blue" size={26} />
+                          <p className="text-action-blue text-sm font-bold mt-2">Document upload can be attached later</p>
+                          <p className="text-text-sec text-xs mt-1">PDF, JPG, or PNG</p>
                         </div>
                       </div>
                     </div>
@@ -546,9 +359,8 @@ const SellerOnboarding = () => {
 
                 <div>
                   <label className="text-sm font-bold text-text-main">Select Primary Services Offered</label>
-                  {serviceOptions.length ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
-                      {serviceOptions.map((service) => {
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+                    {serviceOptions.map((service) => {
                       const selected = form.servicesOffered.includes(service);
 
                       return (
@@ -564,50 +376,14 @@ const SellerOnboarding = () => {
                           {service}
                         </button>
                       );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="mt-3 rounded-lg border border-border-ui bg-bg-page px-4 py-3 text-sm text-text-sec">
-                      No service categories available from API.
-                    </div>
-                  )}
+                    })}
+                  </div>
                 </div>
 
                 <label className="block space-y-1.5 mt-7">
                   <span className="text-sm font-bold text-text-main">Associated Companies</span>
-                  <div className="border border-border-ui rounded-lg bg-bg-page p-3">
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {form.associatedCompanies.map((company) => (
-                        <span key={company} className="inline-flex items-center gap-2 bg-action-blue text-white rounded-md px-3 py-1.5 text-sm font-bold">
-                          {company}
-                          <button type="button" onClick={() => removeOrganisation(company)} aria-label={`Remove ${company}`}>
-                            <X size={14} />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                    <input
-                      value={form.organisationQuery}
-                      onChange={(event) => updateField('organisationQuery', event.target.value)}
-                      placeholder={organisationsLoading ? 'Loading organisations...' : 'Search organisation by name or category'}
-                      className="w-full bg-bg-surface border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue"
-                    />
-                    <div className="mt-3 max-h-56 overflow-y-auto rounded-lg border border-border-ui bg-bg-surface">
-                      {filteredOrganisations.length ? filteredOrganisations.map((organisation) => (
-                        <button
-                          key={`${organisation.name}-${organisation.category}`}
-                          type="button"
-                          onClick={() => addOrganisation(organisation.name)}
-                          className="w-full text-left px-3 py-2.5 hover:bg-bg-page border-b border-border-ui last:border-b-0"
-                        >
-                          <span className="block text-sm font-bold text-text-main">{organisation.name}</span>
-                          {organisation.category ? <span className="block text-xs text-text-sec mt-0.5">{organisation.category}</span> : null}
-                        </button>
-                      )) : (
-                        <div className="px-3 py-3 text-sm text-text-sec">No organisations found.</div>
-                      )}
-                    </div>
-                  </div>
+                  <input value={form.associatedCompaniesText} onChange={(event) => updateField('associatedCompaniesText', event.target.value)} placeholder="LIC, HDFC Life, SBI Mutual Fund" className="w-full bg-bg-page border border-border-ui rounded-lg px-3 py-3 text-sm outline-none focus:border-action-blue" />
+                  <span className="text-xs text-text-sec">Separate company names with commas.</span>
                 </label>
 
                 <div className="mt-7">

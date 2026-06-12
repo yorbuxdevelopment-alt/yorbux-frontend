@@ -45,9 +45,9 @@ function App() {
       {/* ROLE BASED ROUTING YAHAN ADD KAR SAKTE HAIN LATER */}
       {/* Example: isAuthenticated && role === 'admin' ? <AdminRoutes /> : null */}
       <Route path="/" element={<MainLayout handleLogout={handleLogout} />}>
-        <Route index element={isAuthenticated ? <Navigate to="/marketplace" replace /> : <Navigate to="/signin" replace />} />
-        <Route path="marketplace" element={isAuthenticated ? <SellerListing /> : <Navigate to="/signin" />} />
-        <Route path="marketplace/sellers/:sellerId" element={isAuthenticated ? <SellerProfile /> : <Navigate to="/signin" />} />
+        <Route index element={<Navigate to="/marketplace" replace />} />
+        <Route path="marketplace" element={<SellerListing />} />
+        <Route path="marketplace/sellers/:sellerId" element={<SellerProfile />} />
         <Route path="feed" element={isAuthenticated ? <Feed /> : <Navigate to="/signin" />} />
         <Route path="community" element={isAuthenticated ? <CommunityPage /> : <Navigate to="/signin" />} />
         <Route path="jobs" element={isAuthenticated ? <Jobs /> : <Navigate to="/signin" />} />
@@ -63,7 +63,7 @@ function App() {
         <Route path="view-profile" element={isAuthenticated ? <ViewProfile/> : <Navigate to="/signin" />} />
       </Route>
 
-      <Route path="*" element={<Navigate to={isAuthenticated ? '/marketplace' : '/signin'} />} />
+      <Route path="*" element={<Navigate to="/marketplace" />} />
     </Routes>
   );
 }

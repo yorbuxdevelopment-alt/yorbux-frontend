@@ -3,30 +3,35 @@ import { BadgeCheck, Banknote, BriefcaseBusiness, Building2, CreditCard, Landmar
 import { useNavigate } from 'react-router-dom';
 import { getMarketplaceHome, getSellers } from '../services/marketplace';
 
-const categories = [
-  { label: 'Insurance', hint: 'Term, Health, Auto', icon: ShieldCheck, query: 'Insurance' },
-  { label: 'Loans', hint: 'Home, Personal, Business', icon: Banknote, query: 'Loan' },
-  { label: 'Credit Cards', hint: 'Rewards, Travel, Cashback', icon: CreditCard, query: 'Credit Card' },
-  { label: 'Investments', hint: 'Mutual Funds, FDs', icon: TrendingUp, query: 'Investment' }
-];
-
-const fallbackArticles = [
-  { id: 'car-insurance', title: 'How to choose the right Car Insurance?', authorName: 'YorBux Editorial', image: 'https://placehold.co/160x160/e8eef8/4c6ccc?text=Auto' },
-  { id: 'mutual-funds', title: 'Top Mutual Funds for Long-Term Wealth', authorName: 'YorBux Editorial', image: 'https://placehold.co/160x160/e8eef8/4c6ccc?text=MF' },
-  { id: 'cibil-score', title: 'Quick Ways to Improve Your CIBIL Score', authorName: 'YorBux Editorial', image: 'https://placehold.co/160x160/e8eef8/4c6ccc?text=CIBIL' }
-];
+const getCategoryIcon = (name = '') => {
+  const normalizedName = String(name).toLowerCase();
+  if (normalizedName.includes('loan')) return Banknote;
+  if (normalizedName.includes('credit')) return CreditCard;
+  if (normalizedName.includes('invest') || normalizedName.includes('mutual')) return TrendingUp;
+  if (normalizedName.includes('insurance')) return ShieldCheck;
+  return Landmark;
+};
 
 const SellerCard = ({ seller, onView }) => {
-  const primaryServices = seller.services.length ? seller.services.slice(0, 2) : [seller.title];
-  const companies = seller.companies.length ? seller.companies.slice(0, 3).join(', ') : 'Companies not added yet';
+  const primaryServices = (seller.services.length ? seller.services : [seller.title]).filter(Boolean).slice(0, 2);
+  const companies = seller.companies.slice(0, 3).join(', ');
+  const initials = seller.name
+    ? seller.name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
+    : 'NA';
 
   return (
     <article className="bg-bg-surface border border-border-ui rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex gap-4">
-        <img src={seller.avatar} alt={seller.name} className="w-[70px] h-[70px] rounded-full object-cover border border-border-ui bg-bg-page" />
+        {seller.avatar ? (
+          <img src={seller.avatar} alt={seller.name} className="w-[70px] h-[70px] rounded-full object-cover border border-border-ui bg-bg-page" />
+        ) : (
+          <div className="w-[70px] h-[70px] rounded-full border border-border-ui bg-bg-page flex items-center justify-center text-action-blue font-black">
+            {initials}
+          </div>
+        )}
         <div className="min-w-0 flex-1">
           <div className="flex items-start gap-2">
-            <h3 className="text-text-main font-bold text-[17px] leading-tight truncate">{seller.name}</h3>
+            <h3 className="text-text-main font-bold text-[17px] leading-tight truncate">{seller.name || 'Advisor'}</h3>
             {seller.verified ? <BadgeCheck size={17} className="text-emerald-500 shrink-0" /> : null}
           </div>
           <p className="text-text-sec text-sm mt-1 line-clamp-1">
@@ -41,21 +46,23 @@ const SellerCard = ({ seller, onView }) => {
       </div>
 
       <div className="flex flex-wrap gap-2 mt-4">
-        {primaryServices.map((service) => (
+        {primaryServices.length ? primaryServices.map((service) => (
           <span key={service} className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold">
             {service}
           </span>
-        ))}
+        )) : null}
       </div>
 
       <div className="mt-4 space-y-1.5 text-xs text-text-sec">
-        <p className="flex items-center gap-2">
-          <Building2 size={14} />
-          <span className="line-clamp-1">Associated: {companies}</span>
-        </p>
+        {companies ? (
+          <p className="flex items-center gap-2">
+            <Building2 size={14} />
+            <span className="line-clamp-1">Associated: {companies}</span>
+          </p>
+        ) : null}
         <p className="flex items-center gap-2">
           <MapPin size={14} />
-          <span>{seller.location}</span>
+          <span>{seller.location || 'Location unavailable'}</span>
         </p>
       </div>
 
@@ -82,10 +89,12 @@ const SellerCard = ({ seller, onView }) => {
 const SellerListing = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
-  const [location, setLocation] = useState('Bhopal');
+  const [location, setLocation] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [categories, setCategories] = useState([]);
   const [sellers, setSellers] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [searchPlaceholder, setSearchPlaceholder] = useState('Search financial products or advisors');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -107,12 +116,15 @@ const SellerListing = () => {
       ]);
 
       const loadedSellers = sellerData.sellers?.length ? sellerData.sellers : homeData?.featuredSellers || [];
+      setCategories(Array.isArray(homeData?.categories) ? homeData.categories : []);
       setSellers(loadedSellers);
-      setArticles(homeData?.trendingArticles?.length ? homeData.trendingArticles : fallbackArticles);
+      setArticles(homeData?.trendingArticles || []);
+      setSearchPlaceholder(homeData?.searchPlaceholder || 'Search financial products or advisors');
     } catch (requestError) {
       setError(requestError.response?.data?.message || 'Marketplace data load nahi ho paaya');
+      setCategories([]);
       setSellers([]);
-      setArticles(fallbackArticles);
+      setArticles([]);
     } finally {
       setLoading(false);
     }
@@ -128,8 +140,9 @@ const SellerListing = () => {
   };
 
   const handleCategory = (category) => {
-    setSelectedCategory(category.query);
-    loadMarketplace({ ...searchParams, category: category.query });
+    const categoryName = category.name || category.label || '';
+    setSelectedCategory(categoryName);
+    loadMarketplace({ ...searchParams, category: categoryName });
   };
 
   const handleViewSeller = (sellerId, options = {}) => {
@@ -153,7 +166,7 @@ const SellerListing = () => {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Try term insurance seller in Bhopal or HDFC Credit Cards"
+                placeholder={searchPlaceholder}
                 className="w-full h-12 rounded-lg pl-11 pr-4 text-sm text-slate-900 outline-none border border-transparent focus:border-blue-200 bg-slate-50"
               />
             </div>
@@ -175,23 +188,27 @@ const SellerListing = () => {
 
       <div className="max-w-6xl mx-auto px-4 pb-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 -mt-8 relative z-10">
-          {categories.map((category) => {
-            const Icon = category.icon;
-            const active = selectedCategory === category.query;
+          {categories.length ? categories.map((category) => {
+            const categoryName = category.name || category.label;
+            const Icon = getCategoryIcon(categoryName);
+            const active = selectedCategory === categoryName;
 
             return (
               <button
-                key={category.label}
+                key={category._id || category.id || categoryName}
                 type="button"
                 onClick={() => handleCategory(category)}
                 className={`bg-bg-surface border rounded-xl p-5 text-center shadow-sm hover:shadow-md transition-all ${active ? 'border-action-blue ring-2 ring-action-blue/15' : 'border-border-ui'}`}
               >
                 <Icon className="mx-auto text-action-blue" size={30} />
-                <p className="text-text-main font-bold mt-3">{category.label}</p>
-                <p className="text-xs text-text-sec mt-1">{category.hint}</p>
+                <p className="text-text-main font-bold mt-3">{categoryName}</p>
               </button>
             );
-          })}
+          }) : (
+            <div className="col-span-full bg-bg-surface border border-border-ui rounded-xl p-5 text-center text-sm text-text-sec shadow-sm">
+              No service categories available.
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-8 mt-10">
@@ -228,17 +245,29 @@ const SellerListing = () => {
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-text-main text-2xl font-black">Financial Insights</h2>
             </div>
-            <div className="space-y-4">
-              {articles.slice(0, 5).map((article) => (
+            {articles.length ? (
+              <div className="space-y-4">
+                {articles.slice(0, 5).map((article) => (
                 <article key={article.id} className="bg-bg-surface border border-border-ui rounded-xl p-3 flex gap-3 hover:border-action-blue/40 transition-colors">
-                  <img src={article.image} alt={article.title} className="w-20 h-20 rounded-lg object-cover bg-bg-page shrink-0" />
+                  {article.image ? (
+                    <img src={article.image} alt={article.title} className="w-20 h-20 rounded-lg object-cover bg-bg-page shrink-0" />
+                  ) : (
+                    <div className="w-20 h-20 rounded-lg bg-bg-page shrink-0 flex items-center justify-center text-action-blue font-black">
+                      Article
+                    </div>
+                  )}
                   <div className="min-w-0">
                     <h3 className="text-text-main font-bold text-sm leading-snug line-clamp-2">{article.title}</h3>
-                    <p className="text-text-sec text-xs mt-2">By {article.authorName}</p>
+                    {article.authorName ? <p className="text-text-sec text-xs mt-2">By {article.authorName}</p> : null}
                   </div>
                 </article>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-bg-surface border border-border-ui rounded-xl p-6 text-sm text-text-sec">
+                No financial insights available.
+              </div>
+            )}
           </aside>
         </div>
       </div>

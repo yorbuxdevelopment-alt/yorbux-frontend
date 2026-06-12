@@ -3,7 +3,7 @@ import api from '../../api';
 const pickFirst = (...values) => values.find((value) => value !== undefined && value !== null && value !== '');
 
 const buildName = (user = {}) =>
-  pickFirst(user.name, user.fullname, [user.firstName, user.lastName].filter(Boolean).join(' '), 'YorBux Advisor');
+  pickFirst(user.name, user.fullname, [user.firstName, user.lastName].filter(Boolean).join(' '), '');
 
 const buildLocation = (...parts) => parts.filter(Boolean).join(', ');
 
@@ -16,14 +16,13 @@ export const normalizeSeller = (seller = {}) => {
     id: pickFirst(seller.id, seller._id),
     userId: pickFirst(user.id, user._id, seller.userId),
     name: buildName(user),
-    avatar: pickFirst(user.profilePic, user.profileImage, seller.businessLogo, 'https://i.pravatar.cc/150?u=yorbux-advisor'),
-    title: pickFirst(seller.designation, user.designation, seller.category, 'Financial Advisor'),
+    avatar: pickFirst(user.profilePic, user.profileImage, seller.businessLogo, ''),
+    title: pickFirst(seller.designation, user.designation, seller.category, ''),
     location: pickFirst(
       seller.location,
       buildLocation(serviceLocation?.city, serviceLocation?.state),
       buildLocation(user.city, user.state),
-      seller.businessAddress,
-      'India'
+      seller.businessAddress
     ),
     experience: Number(seller.experienceYears || 0),
     rating: Number(seller.rating || 0),
@@ -41,9 +40,9 @@ export const normalizeArticle = (article = {}) => {
   return {
     ...article,
     id: pickFirst(article.id, article._id),
-    title: pickFirst(article.title, article.contentBody, 'Financial insight'),
+    title: pickFirst(article.title, article.contentBody, ''),
     excerpt: pickFirst(article.excerpt, article.contentBody, ''),
-    image: pickFirst(article.image, article.mediaUrl, 'https://placehold.co/320x180/e8eef8/4c6ccc?text=YorBux'),
+    image: pickFirst(article.image, article.mediaUrl, ''),
     authorName: buildName(author),
     createdAt: article.createdAt
   };

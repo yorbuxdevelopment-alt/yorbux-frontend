@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Award, Camera, Check, ChevronLeft, ChevronRight, FileUp, MapPin, Plus, ShieldCheck, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSellerProfile, updateSellerProfile } from '../services/seller';
-import { getServiceCategories } from '../services/masters';
+import { getCompanies, getServiceCategories } from '../services/masters';
 
 const designationOptions = [
   'Branch Operations Manager',
@@ -121,13 +121,12 @@ const SellerOnboarding = () => {
 
   useEffect(() => {
     let active = true;
-
-    const loadOrganisations = async () => {
+    const query = form.organisationQuery.trim();
+    const timer = window.setTimeout(async () => {
       setOrganisationsLoading(true);
 
       try {
-        const response = await fetch('/excel/list-of-organisations.json');
-        const data = await response.json();
+        const data = await getCompanies({ q: query, limit: 25 });
 
         if (!active) return;
         setOrganisations(Array.isArray(data) ? data : []);
@@ -136,26 +135,15 @@ const SellerOnboarding = () => {
       } finally {
         if (active) setOrganisationsLoading(false);
       }
-    };
-
-    loadOrganisations();
+    }, query ? 250 : 0);
 
     return () => {
       active = false;
+      window.clearTimeout(timer);
     };
-  }, []);
+  }, [form.organisationQuery]);
 
-  const filteredOrganisations = useMemo(() => {
-    const query = form.organisationQuery.trim().toLowerCase();
-    if (!query) return organisations.slice(0, 25);
-
-    return organisations
-      .filter((organisation) =>
-        organisation.name?.toLowerCase().includes(query) ||
-        organisation.category?.toLowerCase().includes(query)
-      )
-      .slice(0, 25);
-  }, [form.organisationQuery, organisations]);
+  const filteredOrganisations = useMemo(() => organisations.slice(0, 25), [organisations]);
 
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));

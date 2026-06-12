@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Award, Camera, Check, ChevronLeft, ChevronRight, FileUp, MapPin, Plus, ShieldCheck, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSellerProfile, updateSellerProfile } from '../services/seller';
-import { getMarketplaceHome } from '../services/marketplace';
+import { getServiceCategories } from '../services/masters';
 
 const designationOptions = [
   'Branch Operations Manager',
@@ -67,19 +67,19 @@ const SellerOnboarding = () => {
       setLoadingProfile(true);
 
       try {
-        const [data, homeData] = await Promise.all([
+        const [data, serviceCategories] = await Promise.all([
           getSellerProfile().catch((requestError) => {
             if (requestError.response?.status === 404) return { profile: null };
             throw requestError;
           }),
-          getMarketplaceHome().catch(() => ({ categories: [] }))
+          getServiceCategories().catch(() => [])
         ]);
         const profile = data.profile || {};
 
         if (!active) return;
 
-        const categoryNames = Array.isArray(homeData.categories)
-          ? homeData.categories.map((category) => category.name).filter(Boolean)
+        const categoryNames = Array.isArray(serviceCategories)
+          ? serviceCategories.map((category) => category.name).filter(Boolean)
           : [];
         const profileServices = Array.isArray(profile.servicesOffered) ? profile.servicesOffered : [];
         setServiceOptions(Array.from(new Set([...categoryNames, ...profileServices])));

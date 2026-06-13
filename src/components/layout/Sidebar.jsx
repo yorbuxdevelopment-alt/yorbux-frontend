@@ -7,13 +7,13 @@ const Sidebar = ({ handleLogout, isCollapsed }) => {
         { name: 'Feed', icon: <Home size={20} />, path: '/feed' },
         { name: 'Marketplace', icon: <Landmark size={20} />, path: '/marketplace' },
         { name: 'Members', icon: <Users size={20} />, path: '/community' },
-        { name: 'Become Seller', icon: <ShieldCheck size={20} />, path: '/seller/onboarding' },
         // { name: 'Jobs', icon: <Briefcase size={20} />, path: '/jobs' },
         // { name: 'Messages', icon: <MessageSquareMore size={20} />, path: '/messages' },
         // { name: 'Notification', icon: <Bell size={20} />, count: 2, path: '/notifications' },
         { name: 'Profile', icon: <User size={20} />, path: '/profile' },
         // { name: 'Settings', icon: <Settings size={20} />, path: '/settings' },
     ];
+    const isSellerOnboardingActive = location.pathname === '/seller/onboarding';
 
     return (
         <nav className={`bg-bg-surface w-full h-full flex flex-col transition-all duration-300 ${isCollapsed ? 'px-2 py-4' : 'px-4 py-4'}`}>
@@ -45,6 +45,18 @@ const Sidebar = ({ handleLogout, isCollapsed }) => {
                     );
                 })}
             </ul>
+            <Link to="/seller/onboarding" title={isCollapsed ? 'Become Seller' : ''} className="block mb-2">
+                <div
+                    className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'justify-start gap-3 px-3'} py-3 rounded-xl cursor-pointer transition-all duration-200 text-base ${
+                        isSellerOnboardingActive
+                        ? 'bg-sidebar-active-bg text-sidebar-active-text-color font-bold shadow-sm'
+                        : 'text-text-sec hover:bg-bg-page hover:text-text-main'
+                    }`}
+                >
+                    <ShieldCheck size={20} />
+                    {!isCollapsed && <span className="whitespace-nowrap">Become Seller</span>}
+                </div>
+            </Link>
             <div className="mt-auto pt-4 border-t border-border-ui">
                 <button 
                     onClick={handleLogout}

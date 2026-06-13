@@ -308,7 +308,7 @@ const ProfilePage = () => {
             </div>
 
             <button onClick={() => navigate('/jobs')} className="w-full mt-5 py-2.5 text-blue-600 bg-blue-50/50 border-2 border-blue-100 rounded-xl text-sm font-bold hover:bg-blue-100 hover:border-blue-200 active:scale-95 transition-all">
-              View all jobs
+              Job Seeker
             </button>
           </div>
         </div>

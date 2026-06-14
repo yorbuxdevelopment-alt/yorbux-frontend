@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Camera, ChevronDown, CheckCircle, Search, X, User, Briefcase, ArrowRight, ArrowLeft, Save, LoaderCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getMyProfile, updateMyProfessionalProfile, updateMyProfile } from '../services/profile';
+import { getCompanies } from '../services/masters';
 
 const prefixOptions = ['Mr.', 'Ms.', 'Mrs.', 'Dr.', 'Prof.'];
 const experienceOptions = [
@@ -10,6 +11,223 @@ const experienceOptions = [
   { label: '3-5 Years', value: '5' },
   { label: '5+ Years', value: '6' }
 ];
+
+const designationOptions = [
+  'Branch Operations Manager',
+  'Branch Manager',
+  'Auditor',
+  'Assistant Vice President',
+  'Assistant Manager',
+  'Assistant General Manager',
+  'Assistant Branch Manager',
+  'Alternative Investments Specialist',
+  'Agency Development Manager',
+  'Actuary',
+  'Account Executive'
+];
+
+const normalizeCompanyName = (company) => {
+  if (typeof company === 'string') return company;
+  return company?.name || company?.companyName || company?.title || '';
+};
+
+const normalizeLocationPart = (value) => {
+  const text = String(value || '').trim();
+  if (!text) return '';
+  const normalized = text.toLowerCase();
+  if (['not specified', 'unknown', 'n/a', 'na', 'none', 'null', 'undefined'].includes(normalized)) return '';
+  return text;
+};
+
+const hasMeaningfulLocationValue = (value) => Boolean(normalizeLocationPart(value));
+
+const isLocationFilled = (formData) =>
+  hasMeaningfulLocationValue(formData.city) ||
+  hasMeaningfulLocationValue(formData.state) ||
+  hasMeaningfulLocationValue(formData.country);
+
+const formatDetectedLocation = (location = {}) => {
+  const city = normalizeLocationPart(
+    location.city || location.town || location.village || location.suburb || location.municipality || location.city_district || ''
+  );
+  const state = normalizeLocationPart(location.state || location.region || location.county || location.state_district || '');
+  const country = normalizeLocationPart(location.country || location.country_code || '');
+
+  return {
+    city,
+    state,
+    country
+  };
+};
+
+const detectLocationFromIp = async () => {
+  const response = await fetch('https://ipapi.co/json/');
+  if (!response.ok) {
+    throw new Error('IP location lookup failed');
+  }
+
+  const data = await response.json();
+  return {
+    city: normalizeLocationPart(data.city),
+    state: normalizeLocationPart(data.region || data.region_code),
+    country: normalizeLocationPart(data.country_name || data.country)
+  };
+};
+
+const SearchSelect = ({
+  label,
+  value,
+  onChange,
+  placeholder,
+  options,
+  loading = false,
+  getOptionValue = (option) => option,
+  getOptionMeta = () => '',
+  onSearch
+}) => {
+  const [query, setQuery] = useState(value || '');
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    setQuery(value || '');
+  }, [value]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!containerRef.current?.contains(event.target)) {
+        setOpen(false);
+        setQuery(value || '');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [value]);
+
+  const visibleOptions = useMemo(() => {
+    if (onSearch) return options;
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return options;
+    return options.filter((option) => String(getOptionValue(option)).toLowerCase().includes(normalizedQuery));
+  }, [getOptionValue, onSearch, options, query]);
+
+  const handleQueryChange = (event) => {
+    const nextQuery = event.target.value;
+    setQuery(nextQuery);
+    setOpen(true);
+    if (onSearch) onSearch(nextQuery);
+  };
+
+  const handleSelect = (option) => {
+    const nextValue = getOptionValue(option);
+    onChange(nextValue);
+    setQuery(nextValue);
+    setOpen(false);
+  };
+
+  const clearValue = () => {
+    onChange('');
+    setQuery('');
+    setOpen(false);
+    if (onSearch) onSearch('');
+  };
+
+  return (
+    <div ref={containerRef}>
+      <label className="block text-[12px] font-bold text-gray-600 mb-1.5">{label}</label>
+      <div className="relative">
+        <div className="relative flex items-center bg-slate-50 border border-gray-200 rounded-xl px-3 py-2.5 transition-all focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500">
+          <Search size={16} className="text-gray-400 mr-2 shrink-0" />
+          <input
+            value={query}
+            onChange={handleQueryChange}
+            onFocus={() => {
+              setOpen(true);
+              if (onSearch) onSearch(query);
+            }}
+            placeholder={loading ? 'Loading...' : placeholder}
+            className="w-full min-w-0 bg-transparent text-[14px] text-gray-700 outline-none"
+          />
+          {value ? (
+            <button type="button" onClick={clearValue} className="text-gray-400 ml-2 hover:text-gray-600" aria-label={`Clear ${label}`}>
+              <X size={16} />
+            </button>
+          ) : null}
+        </div>
+        {open ? (
+          <div className="absolute z-30 mt-2 max-h-56 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+            {loading ? (
+              <div className="px-3 py-3 text-sm text-gray-500">Loading...</div>
+            ) : visibleOptions.length ? (
+              visibleOptions.map((option) => {
+                const optionValue = getOptionValue(option);
+                const meta = getOptionMeta(option);
+
+                return (
+                  <button
+                    key={`${label}-${optionValue}-${meta}`}
+                    type="button"
+                    onClick={() => handleSelect(option)}
+                    className="w-full border-b border-gray-100 px-3 py-2.5 text-left last:border-b-0 hover:bg-slate-50"
+                  >
+                    <span className="block text-sm font-bold text-gray-800">{optionValue}</span>
+                    {meta ? <span className="mt-0.5 block text-xs text-gray-500">{meta}</span> : null}
+                  </button>
+                );
+              })
+            ) : (
+              <div className="px-3 py-3 text-sm text-gray-500">No results found.</div>
+            )}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+const CompanySearchSelect = ({ label, value, onChange, placeholder }) => {
+  const [query, setQuery] = useState('');
+  const [companies, setCompanies] = useState([]);
+  const [loadingCompanies, setLoadingCompanies] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    const trimmedQuery = query.trim();
+    const timer = window.setTimeout(async () => {
+      setLoadingCompanies(true);
+
+      try {
+        const data = await getCompanies({ q: trimmedQuery, limit: 25 });
+        if (!active) return;
+        setCompanies(Array.isArray(data) ? data : []);
+      } catch {
+        if (active) setCompanies([]);
+      } finally {
+        if (active) setLoadingCompanies(false);
+      }
+    }, trimmedQuery ? 250 : 0);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [query]);
+
+  return (
+    <SearchSelect
+      label={label}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      options={companies.slice(0, 25)}
+      loading={loadingCompanies}
+      getOptionValue={normalizeCompanyName}
+      getOptionMeta={(company) => company?.category || ''}
+      onSearch={setQuery}
+    />
+  );
+};
 
 const getCompletion = (formData) => {
   const keys = [
@@ -101,8 +319,12 @@ const EditProfile = () => {
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [locationDetecting, setLocationDetecting] = useState(false);
+  const [locationDetected, setLocationDetected] = useState(false);
+  const [locationDetectionError, setLocationDetectionError] = useState('');
   const dragStart = useRef({ x: 0, y: 0 });
   const fileInputRef = useRef(null);
+  const locationAttemptedRef = useRef(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -141,6 +363,100 @@ const EditProfile = () => {
 
     loadProfile();
   }, []);
+
+  useEffect(() => {
+    if (loading || locationAttemptedRef.current || isLocationFilled(formData)) return;
+
+    let active = true;
+    locationAttemptedRef.current = true;
+    setLocationDetecting(true);
+    setLocationDetectionError('');
+
+    const applyDetectedLocation = (detected) => {
+      if (!active) return;
+
+      const nextLocation = {
+        city: normalizeLocationPart(detected.city),
+        state: normalizeLocationPart(detected.state),
+        country: normalizeLocationPart(detected.country)
+      };
+
+      setFormData((current) => ({
+        ...current,
+        city: hasMeaningfulLocationValue(current.city) ? current.city : nextLocation.city,
+        state: hasMeaningfulLocationValue(current.state) ? current.state : nextLocation.state,
+        country: hasMeaningfulLocationValue(current.country) ? current.country : nextLocation.country
+      }));
+
+      setLocationDetected(Boolean(nextLocation.city || nextLocation.state || nextLocation.country));
+      if (!nextLocation.city && !nextLocation.state && !nextLocation.country) {
+        setLocationDetectionError('Could not detect a precise location automatically.');
+      }
+      setLocationDetecting(false);
+    };
+
+    const detect = async () => {
+      try {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(async (position) => {
+            try {
+              const { latitude, longitude } = position.coords;
+              const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+              const data = await response.json();
+              const detected = formatDetectedLocation(data.address || {});
+
+              if (detected.city || detected.state || detected.country) {
+                applyDetectedLocation(detected);
+                return;
+              }
+
+              const ipDetected = await detectLocationFromIp();
+              applyDetectedLocation(ipDetected);
+            } catch {
+              try {
+                const ipDetected = await detectLocationFromIp();
+                applyDetectedLocation(ipDetected);
+              } catch {
+                if (active) {
+                  setLocationDetecting(false);
+                  setLocationDetectionError('Could not detect location automatically.');
+                }
+              }
+            }
+          }, async () => {
+            try {
+              const ipDetected = await detectLocationFromIp();
+              applyDetectedLocation(ipDetected);
+            } catch {
+              if (active) {
+                setLocationDetecting(false);
+                setLocationDetectionError('Location permission was denied. You can enter it manually.');
+              }
+            }
+          }, {
+            enableHighAccuracy: false,
+            timeout: 10000,
+            maximumAge: 300000
+          });
+          return;
+        }
+
+        const ipDetected = await detectLocationFromIp();
+        applyDetectedLocation(ipDetected);
+      } catch {
+        if (active) {
+          setLocationDetecting(false);
+          setLocationDetectionError('Could not detect location automatically.');
+        }
+      }
+    };
+
+    detect();
+
+    return () => {
+      active = false;
+    };
+  }, [formData, loading]);
 
   const handleFieldChange = (event) => {
     const { name, value } = event.target;
@@ -389,6 +705,9 @@ const EditProfile = () => {
                           <input name="country" value={formData.country} onChange={handleFieldChange} type="text" className="w-full bg-transparent text-[14px] text-gray-700 outline-none" />
                           {formData.country ? <X size={16} onClick={() => setFormData((current) => ({ ...current, country: '' }))} className="text-gray-400 ml-2 cursor-pointer hover:text-gray-600" /> : null}
                         </div>
+                          <p className="mt-1 text-[11px] text-gray-500">
+                          {locationDetecting ? 'Detecting current location...' : locationDetected ? 'Location auto-filled from this device.' : locationDetectionError || 'You can type this manually if needed.'}
+                        </p>
                       </div>
                       <div>
                         <label className="block text-[12px] font-bold text-gray-600 mb-1.5">State <span className="text-red-500">*</span></label>
@@ -409,12 +728,21 @@ const EditProfile = () => {
                     <h4 className="text-[13px] font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide">Current Role</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-[12px] font-bold text-gray-600 mb-1.5">Organisation</label>
-                        <input name="organisation" value={formData.organisation} onChange={handleFieldChange} type="text" className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[14px] text-gray-700 outline-none transition-all" />
+                        <CompanySearchSelect
+                          label="Organisation"
+                          value={formData.organisation}
+                          onChange={(value) => setFormData((current) => ({ ...current, organisation: value }))}
+                          placeholder="Search organisation by name or category"
+                        />
                       </div>
                       <div>
-                        <label className="block text-[12px] font-bold text-gray-600 mb-1.5">Designation</label>
-                        <input name="designation" value={formData.designation} onChange={handleFieldChange} type="text" className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[14px] text-gray-700 outline-none transition-all" />
+                        <SearchSelect
+                          label="Designation"
+                          value={formData.designation}
+                          onChange={(value) => setFormData((current) => ({ ...current, designation: value }))}
+                          placeholder="Search designation"
+                          options={designationOptions}
+                        />
                       </div>
                       <div>
                         <label className="block text-[12px] font-bold text-gray-600 mb-1.5">Total Experience (Years)</label>
@@ -433,12 +761,21 @@ const EditProfile = () => {
                     <h4 className="text-[13px] font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide">Previous Role</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-[12px] font-bold text-gray-600 mb-1.5">Previous Organisation</label>
-                        <input name="previousOrganisation" value={formData.previousOrganisation} onChange={handleFieldChange} type="text" className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[14px] text-gray-700 outline-none transition-all" />
+                        <CompanySearchSelect
+                          label="Previous Organisation"
+                          value={formData.previousOrganisation}
+                          onChange={(value) => setFormData((current) => ({ ...current, previousOrganisation: value }))}
+                          placeholder="Search previous organisation"
+                        />
                       </div>
                       <div>
-                        <label className="block text-[12px] font-bold text-gray-600 mb-1.5">Previous Designation</label>
-                        <input name="previousDesignation" value={formData.previousDesignation} onChange={handleFieldChange} type="text" className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[14px] text-gray-700 outline-none transition-all" />
+                        <SearchSelect
+                          label="Previous Designation"
+                          value={formData.previousDesignation}
+                          onChange={(value) => setFormData((current) => ({ ...current, previousDesignation: value }))}
+                          placeholder="Search previous designation"
+                          options={designationOptions}
+                        />
                       </div>
                     </div>
                   </div>

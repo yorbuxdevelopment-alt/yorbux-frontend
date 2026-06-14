@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Search, Plus, User, Settings, LogOut, Moon, Sun, Users, ChevronLeft, ChevronRight, FileText, Store, X, Send, BriefcaseBusiness } from 'lucide-react';
+import { Search, Plus, User, Settings, LogOut, Moon, Sun, Users, ChevronLeft, ChevronRight, FileText, X, Send, BriefcaseBusiness } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import CreatePostModal from '../feed/CreatePostModal';
@@ -56,10 +56,10 @@ const SellerPostModal = ({ isOpen, onClose, currentUserProfile }) => {
                 targetAudience: form.targetAudience.trim(),
                 contactNote: form.contactNote.trim()
             });
-            setSuccess('Seller post published successfully.');
+            setSuccess('Job post published successfully.');
             window.setTimeout(onClose, 700);
         } catch (requestError) {
-            setError(requestError.response?.data?.message || 'Seller post publish nahi ho paaya.');
+            setError(requestError.response?.data?.message || 'Job post publish nahi ho paaya.');
         } finally {
             setSubmitting(false);
         }
@@ -74,8 +74,8 @@ const SellerPostModal = ({ isOpen, onClose, currentUserProfile }) => {
                             <BriefcaseBusiness size={20} />
                         </div>
                         <div className="min-w-0">
-                            <h2 className="text-text-main font-black text-lg leading-tight">Seller Post</h2>
-                            <p className="text-text-sec text-sm truncate">Promote your services in the feed</p>
+                            <h2 className="text-text-main font-black text-lg leading-tight">Job Post</h2>
+                            <p className="text-text-sec text-sm truncate">Create a job posting for your services</p>
                         </div>
                     </div>
                     <button onClick={onClose} className="p-2 rounded-lg hover:bg-bg-page text-text-sec" aria-label="Close seller post modal">
@@ -134,7 +134,7 @@ const SellerPostModal = ({ isOpen, onClose, currentUserProfile }) => {
                         </button>
                         <button disabled={submitting} type="submit" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-action-blue text-white font-bold text-sm hover:opacity-90 disabled:opacity-60">
                             <Send size={16} />
-                            <span>{submitting ? 'Posting...' : 'Post Service'}</span>
+                            <span>{submitting ? 'Posting...' : 'Post Job'}</span>
                         </button>
                     </div>
                 </form>
@@ -261,15 +261,15 @@ const Navbar = ({ setIsLeftSidebarOpen, setIsRightSidebarOpen, handleLogout, isS
                                     className="w-full flex items-center gap-3 px-4 py-3 text-text-main hover:bg-bg-page text-sm font-medium transition-colors text-left"
                                 >
                                     <FileText size={18} />
-                                    <span>Normal User Post</span>
+                                    <span>Create Post</span>
                                 </button>
                                 {isSeller ? (
                                     <button
                                         onClick={handleSellerPost}
                                         className="w-full flex items-center gap-3 px-4 py-3 text-text-main hover:bg-bg-page text-sm font-medium transition-colors text-left"
                                     >
-                                        <Store size={18} />
-                                        <span>Seller Post</span>
+                                        <BriefcaseBusiness size={18} />
+                                        <span>Job Post</span>
                                     </button>
                                 ) : null}
                             </div>
